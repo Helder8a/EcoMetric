@@ -15,6 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let evaluationData = {};
     let currentCertification = "lidera";
     let lccaChartInstance = null;
+    let performanceChartInstance = null; // Variable para el nuevo gráfico
 
     // --- Main Evaluation Functions ---
 
@@ -23,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const certData = certificationsDB[currentCertification]?.data;
         if (!certData) {
             updateScoreDisplay();
+            updatePerformanceChart(); // Actualiza el gráfico al iniciar
             return;
         }
         for (let aspect in certData) {
@@ -32,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
         updateScoreDisplay();
+        updatePerformanceChart(); // Actualiza el gráfico al iniciar
     }
 
     function updateScoreDisplay() {
@@ -65,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         }
         levelTextEl.textContent = level;
+        updatePerformanceChart(); // Actualiza el gráfico cada vez que cambia la puntuación
     }
 
     function calculateScore() {
@@ -72,7 +76,6 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!certConfig) return 0;
         let totalScore = 0;
         if (certConfig.name === "LiderA" && certConfig.data) {
-            // Using 'building' weights as default for now
             const weights = certConfig.weights.building; 
             let weightedSum = 0;
             let totalWeight = 0;
@@ -113,7 +116,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 let creditsHTML = "";
                 if (details.credits) {
                     Object.keys(details.credits).forEach(creditName => {
-                        // Sanitize IDs for valid query selectors
                         const creditId = `${currentCertification}-${aspect}-${area}-${creditName}`.replace(/[^a-zA-Z0-9-_]/g, "");
                         creditsHTML += `
                             <div class="custom-control custom-checkbox">
@@ -253,7 +255,7 @@ document.addEventListener("DOMContentLoaded", function () {
         copyReportBtn.addEventListener("click", () => {
             const reportOutput = getEl("report-output");
             reportOutput.select();
-            reportOutput.setSelectionRange(0, 99999); // For mobile devices
+            reportOutput.setSelectionRange(0, 99999);
             try {
                 document.execCommand("copy");
                 alert("Text copied to clipboard!");
@@ -273,7 +275,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         for (let i = 1; i <= years; i++) {
             maintenanceCosts += (material.annual_maintenance_cost * quantity) / Math.pow(1 + rate, i);
-            if (i % material.useful_life === 0 && i < years) { // Simplified replacement logic
+            if (i % material.useful_life === 0 && i < years) {
                  replacementCosts += (material.initial_cost * material.replacement_cost_factor * quantity) / Math.pow(1 + rate, i);
             }
             energySavings += (material.annual_energy_saving * quantity) / Math.pow(1 + rate, i);
@@ -336,24 +338,104 @@ document.addEventListener("DOMContentLoaded", function () {
         const quantityInput = getEl('lccaQuantity');
         const discountRateInput = getEl('lccaDiscountRate');
         
-        // Use a wrapper function for the event listener to avoid re-adding it
         const updateHandler = () => {
             const quantity = parseFloat(quantityInput.value) || 1;
             const discountRate = parseFloat(discountRateInput.value) || 0;
             updateLccaDisplay(material, quantity, discountRate);
         };
         
-        // Remove old listeners before adding new ones
         quantityInput.removeEventListener('input', window.lccaUpdateHandler);
         discountRateInput.removeEventListener('input', window.lccaUpdateHandler);
 
-        window.lccaUpdateHandler = updateHandler; // Store handler globally to remove it later
+        window.lccaUpdateHandler = updateHandler;
         
         quantityInput.addEventListener('input', window.lccaUpdateHandler);
         discountRateInput.addEventListener('input', window.lccaUpdateHandler);
 
-        updateHandler(); // Initial calculation
+        updateHandler();
         $("#lccaModal").modal("show");
+    }
+
+    // --- NUEVA FUNCIÓN PARA EL GRÁFICO DE DESEMPEÑO ---
+    function updatePerformanceChart() {
+        const certConfig = certificationsDB[currentCertification];
+        const ctx = getEl('performanceChart')?.getContext('2d');
+        
+        if (!ctx || !certConfig || certConfig.name !== "LiderA") {
+             if (performanceChartInstance) {
+                performanceChartInstance.destroy();
+                performanceChartInstance = null;
+            }
+            return;
+        }
+
+        const weights = certConfig.weights.building; 
+        const labels = Object.keys(weights);
+
+        const areaScores = labels.map(aspect => {
+            let aspectScore = 0;
+            let maxAspectScore = 0;
+            if (evaluationData[aspect]) {
+                for (const area in evaluationData[aspect]) {
+                    aspectScore += evaluationData[aspect][area];
+                    if (certConfig.data[aspect] && certConfig.data[aspect][area] && certConfig.data[aspect][area].credits) {
+                        maxAspectScore += Object.values(certConfig.data[aspect][area].credits).reduce((sum, val) => sum + val, 0);
+                    }
+                }
+            }
+            return maxAspectScore > 0 ? (aspectScore / maxAspectScore) * 100 : 0;
+        });
+
+        if (performanceChartInstance) {
+            performanceChartInstance.data.labels = labels;
+            performanceChartInstance.data.datasets[0].data = areaScores;
+            performanceChartInstance.update();
+        } else {
+            performanceChartInstance = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Performance (%)',
+                        data: areaScores,
+                        fill: true,
+                        backgroundColor: 'rgba(22, 160, 133, 0.2)',
+                        borderColor: 'rgb(22, 160, 133)',
+                        pointBackgroundColor: 'rgb(22, 160, 133)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgb(22, 160, 133)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                display: false
+                            },
+                            suggestedMin: 0,
+                            suggestedMax: 100,
+                            ticks: {
+                                backdropColor: 'transparent',
+                                color: '#6C757D'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
     }
 
     // --- Event Listeners ---
@@ -381,7 +463,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Event Delegation for the LCCA calculator button
     const solutionsModalBody = document.querySelector("#solutionsModal .modal-body");
     if(solutionsModalBody){
         solutionsModalBody.addEventListener('click', function (e) {
