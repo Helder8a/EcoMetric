@@ -1826,3 +1826,35 @@ img.lazy-loaded {
         font-size: 1rem;
     }
 }
+
+/* ... (todo el código CSS anterior permanece igual) ... */
+
+/* --- ESTILOS PARA EL NUEVO LOGOTIPO DE TEXTO --- */
+.text-logo {
+    font-family: 'Poppins', sans-serif; /* Fuente moderna y profesional */
+    font-weight: 700; /* Letra en negrita */
+    font-size: 2.2rem; /* Tamaño de fuente más grande */
+    letter-spacing: 1px; /* Espaciado ligero entre letras */
+    
+    /* Gradiente de colores ambientales (verde a azul) */
+    background: linear-gradient(45deg, #2ecc71, #3498db);
+    
+    /* Aplicar el gradiente como color de texto */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+    
+    /* Transición suave para cualquier cambio futuro */
+    transition: all 0.3s ease;
+}
+
+/* Ajuste para pantallas más pequeñas para que no sea demasiado grande */
+@media (max-width: 768px) {
+    .text-logo {
+        font-size: 1.8rem;
+    }
+}
+
+/* --- ESTILOS PARA LA PÁGINA SOBRE NÓS (CON EFECTOS) --- */
+/* ... (el resto de tu archivo CSS continúa aquí) ... */
