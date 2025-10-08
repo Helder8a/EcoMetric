@@ -1,18 +1,18 @@
 # ========================================================
-# robots.txt optimizado para https://www.portugalapoia.com/
-# Fecha de actualización: 2025-08-20
+# robots.txt optimized for https://www.ecometric.com/
+# Last updated: 2025-08-20
 # ========================================================
 
 User-agent: *
 Allow: /
 
-# No rastrear el panel de administración, funciones de backend y datos crudos.
+# Do not crawl admin panel, backend functions, and raw data.
 Disallow: /admin/
 Disallow: /netlify/
 Disallow: /_dados/
 
-# No rastrear la página de modo sin conexión.
+# Do not crawl the offline mode page.
 Disallow: /offline.html
 
-# Ubicación del Sitemap (verificado y corregido)
-Sitemap: https://www.portugalapoia.com/sitemap.xml
+# Sitemap location (verified and corrected)
+Sitemap: https://www.ecometric.com/sitemap.xml

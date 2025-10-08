@@ -5,55 +5,31 @@
       xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 <url>
-  <loc>https://portugalapoia.com/index.html</loc>
+  <loc>https://ecometric.com/index.html</loc>
   <lastmod>2025-08-20</lastmod>
   <changefreq>daily</changefreq>
   <priority>1.00</priority>
 </url>
 <url>
-  <loc>https://portugalapoia.com/doações.html</loc>
+  <loc>https://ecometric.com/app_sustainability_evaluator.html</loc>
   <lastmod>2025-08-20</lastmod>
-  <changefreq>daily</changefreq>
+  <changefreq>monthly</changefreq>
   <priority>0.90</priority>
 </url>
 <url>
-  <loc>https://portugalapoia.com/empregos.html</loc>
+  <loc>https://ecometric.com/app_urban_evaluator.html</loc>
   <lastmod>2025-08-20</lastmod>
-  <changefreq>daily</changefreq>
+  <changefreq>monthly</changefreq>
   <priority>0.90</priority>
 </url>
 <url>
-  <loc>https://portugalapoia.com/serviços.html</loc>
-  <lastmod>2025-08-20</lastmod>
-  <changefreq>daily</changefreq>
-  <priority>0.90</priority>
-</url>
-<url>
-  <loc>https://portugalapoia.com/blog.html</loc>
+  <loc>https://ecometric.com/blog.html</loc>
   <lastmod>2025-08-20</lastmod>
   <changefreq>weekly</changefreq>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://portugalapoia.com/publicar.html</loc>
-  <lastmod>2025-08-20</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.70</priority>
-</url>
-<url>
-  <loc>https://portugalapoia.com/app_evaluadorsustentable.html</loc>
-  <lastmod>2025-08-20</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.60</priority>
-</url>
-<url>
-  <loc>https://portugalapoia.com/app_avaliadorurbano.html</loc>
-  <lastmod>2025-08-20</lastmod>
-  <changefreq>monthly</changefreq>
-  <priority>0.60</priority>
-</url>
-<url>
-  <loc>https://portugalapoia.com/politica-privacidade.html</loc>
+  <loc>https://ecometric.com/privacy-policy.html</loc>
   <lastmod>2025-08-20</lastmod>
   <changefreq>yearly</changefreq>
   <priority>0.50</priority>
