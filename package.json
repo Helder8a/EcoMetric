@@ -1,0 +1,11 @@
+{
+  "name": "portugalapoia-functions",
+  "version": "1.0.0",
+  "description": "Funciones para el sitio PortugalApoia",
+  "dependencies": {
+    "@octokit/rest": "^20.0.1",
+    "cloudinary": "^1.41.3",
+    "busboy": "^1.6.0",
+    "@sendgrid/mail": "^8.1.3"
+  }
+}

@@ -1,0 +1,641 @@
+/* =================================================================
+   HOJA DE ESTILOS CSS EXCLUSIVA PARA EL AVALIADOR URBANO
+   ================================================================= */
+
+/* -----------------------------------------------------------------
+   1. Variables de Color y Tipografía
+   ----------------------------------------------------------------- */
+:root {
+    --primary-color: #005A9C;
+    --secondary-color: #007BFF;
+    --accent-color: #FFA500;
+    --background-color: #F8F9FA;
+    --section-bg-color: #FFFFFF;
+    --text-color: #343A40;
+    --label-color: #495057;
+    --border-color: #DEE2E6;
+    --success-color: #28A745;
+    --error-color: #DC3545;
+    --font-primary: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --border-radius-main: 8px;
+}
+
+/* -----------------------------------------------------------------
+   2. Estilos Generales y Secciones del Formulario
+   ----------------------------------------------------------------- */
+.avaliador-urbano-container {
+    font-family: var(--font-primary);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+    border-radius: var(--border-radius-main);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.form-section {
+    background-color: var(--section-bg-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-main);
+    padding: 25px 30px;
+    margin-bottom: 30px;
+}
+
+.form-section h3 {
+    font-size: 22px;
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--secondary-color);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* -----------------------------------------------------------------
+   3. Estilos de Campos del Formulario
+   ----------------------------------------------------------------- */
+.form-group label {
+    display: block;
+    font-weight: 600;
+    color: var(--label-color);
+    margin-bottom: 8px;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 16px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-sizing: border-box;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+}
+
+.preview-placeholder {
+    width: 100%;
+    min-height: 180px;
+    background-color: #f8f9fa;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius-main);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    text-align: center;
+    overflow: hidden;
+    color: #6c757d;
+}
+
+.preview-placeholder img {
+    max-width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+}
+
+.highlighted-input-group {
+    background-color: #e9f2ff;
+    padding: 15px;
+    border-radius: var(--border-radius-main);
+    border: 1px solid var(--secondary-color);
+    margin-bottom: 20px;
+}
+
+/* -----------------------------------------------------------------
+   4. Estilos para Secciones Anteriores
+   ----------------------------------------------------------------- */
+.road-type-group h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+
+.road-selection-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+    align-items: end;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
+.road-evaluation-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.road-evaluation-row>label {
+    font-weight: 600;
+    color: var(--label-color);
+}
+
+.evaluation-group {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-end;
+}
+
+.evaluation-group label {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.evaluation-group input[type="radio"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--border-color);
+    border-radius: 50%;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.evaluation-group input[type="radio"]:hover {
+    border-color: var(--secondary-color);
+}
+
+.evaluation-group input[type="radio"]:checked {
+    border: 6px solid var(--secondary-color);
+}
+
+.evaluation-group label:has(input[value="bom"]:checked) {
+    color: var(--success-color);
+}
+
+.evaluation-group label:has(input[value="regular"]:checked) {
+    color: var(--accent-color);
+}
+
+.evaluation-group label:has(input[value="mau"]:checked) {
+    color: var(--error-color);
+}
+
+.evaluation-group input[value="bom"]:checked {
+    border-color: var(--success-color);
+}
+
+.evaluation-group input[value="regular"]:checked {
+    border-color: var(--accent-color);
+}
+
+.evaluation-group input[value="mau"]:checked {
+    border-color: var(--error-color);
+}
+
+.transport-option-row {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 15px;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.transport-option-row:last-child {
+    border-bottom: none;
+}
+
+.transport-option-row .form-control-sm {
+    padding: .25rem .5rem;
+    font-size: .875rem;
+}
+
+.public-services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.service-item {
+    background-color: #f8f9fa;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-main);
+    padding: 15px;
+    text-align: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.service-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.service-icon {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.service-label {
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 15px;
+    display: block;
+}
+
+.service-toggle {
+    display: flex;
+    justify-content: center;
+    background-color: #e9ecef;
+    border-radius: 50px;
+    padding: 4px;
+}
+
+.service-toggle input[type="radio"] {
+    display: none;
+}
+
+.service-toggle label {
+    flex: 1;
+    padding: 8px 10px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.service-toggle input[type="radio"]:checked+label {
+    color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.service-toggle input[value="sim"]:checked+label {
+    background-color: var(--success-color);
+}
+
+.service-toggle input[value="nao"]:checked+label {
+    background-color: var(--error-color);
+}
+
+.property-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+    margin-bottom: 25px;
+}
+
+.feature-item {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-main);
+    padding: 15px;
+    text-align: center;
+    background-color: #fff;
+}
+
+.feature-icon {
+    font-size: 2rem;
+    color: var(--secondary-color);
+    margin-bottom: 10px;
+}
+
+.feature-label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--label-color);
+}
+
+.feature-quantity input {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    padding: 5px 8px;
+}
+
+.feature-others {
+    margin-top: 20px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+}
+
+.other-item {
+    display: grid;
+    grid-template-columns: 3fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.conditional-details {
+    display: none;
+    margin-top: 25px;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 25px;
+}
+
+.building-features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+}
+
+.building-feature-item {
+    display: flex;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: var(--border-radius-main);
+    border: 1px solid var(--border-color);
+    gap: 15px;
+}
+
+.building-feature-item i {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    width: 25px;
+    text-align: center;
+}
+
+.building-feature-item label {
+    flex-grow: 1;
+    text-align: left;
+    font-weight: 600;
+    margin-bottom: 0;
+}
+
+.building-feature-item .form-control-sm {
+    width: 70px;
+    text-align: center;
+    padding: .25rem;
+}
+
+.feature-toggle {
+    display: flex;
+    background-color: #e9ecef;
+    border-radius: 50px;
+    padding: 4px;
+}
+
+.feature-toggle input[type="radio"] {
+    display: none;
+}
+
+.feature-toggle label {
+    padding: 5px 15px;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.feature-toggle input[type="radio"]:checked+label {
+    color: #fff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+.feature-toggle input[value="sim"]:checked+label {
+    background-color: var(--success-color);
+}
+
+.feature-toggle input[value="nao"]:checked+label {
+    background-color: var(--error-color);
+}
+
+.finishes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+.finish-item {
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-main);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.finish-icon {
+    font-size: 2rem;
+    color: var(--primary-color);
+    text-align: center;
+}
+
+.finish-label {
+    font-weight: 600;
+    font-size: 1.1rem;
+    text-align: center;
+    color: var(--label-color);
+    margin-bottom: 0;
+}
+
+.finish-item .form-control {
+    margin-bottom: 5px;
+}
+
+.finish-item .evaluation-group {
+    justify-content: center;
+    border-top: 1px solid var(--border-color);
+    padding-top: 15px;
+}
+
+/* -----------------------------------------------------------------
+   5. Estilos para "Método de Valorização"
+   ----------------------------------------------------------------- */
+.valuation-method-selector {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.valuation-method {
+    margin-bottom: 0;
+}
+
+.valuation-method input[type="radio"] {
+    display: none;
+}
+
+.method-label {
+    display: block;
+    padding: 15px 20px;
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius-main);
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.valuation-method input[type="radio"]:checked+.method-label {
+    border-color: var(--secondary-color);
+    background-color: #e9f2ff;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.15);
+}
+
+.method-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 5px;
+}
+
+.method-title i {
+    margin-right: 10px;
+}
+
+.method-summary {
+    font-size: 0.9rem;
+    color: var(--label-color);
+    margin-bottom: 0;
+    line-height: 1.5;
+}
+
+#terrain-valuation h4 {
+    color: var(--text-color);
+    border-top: 1px dashed var(--border-color);
+    padding-top: 25px;
+}
+
+.table-responsive {
+    margin-top: 15px;
+}
+
+.table thead th {
+    background-color: #e9ecef;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.table td,
+.table th {
+    vertical-align: middle;
+}
+
+.table input {
+    font-size: 0.9rem;
+    padding: 8px 10px;
+}
+
+.valuation-results-box {
+    background-color: #e9f2ff;
+    border-left: 5px solid var(--secondary-color);
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.1rem;
+    padding: 8px 0;
+}
+
+.result-item.final-value {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: var(--primary-color);
+    border-top: 1px solid var(--secondary-color);
+    margin-top: 10px;
+    padding-top: 10px;
+}
+
+.formula-explanation {
+    background-color: #f8f9fa;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-main);
+    padding: 20px;
+    margin-top: 20px;
+}
+
+.formula-explanation h5 {
+    color: var(--primary-color);
+}
+
+.formula-explanation p {
+    margin-bottom: 10px;
+}
+
+.formula-explanation strong {
+    font-family: monospace, monospace;
+    background-color: #e9ecef;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+/* -----------------------------------------------------------------
+   6. Botones Principales y Media Queries
+   ----------------------------------------------------------------- */
+.submit-button {
+    display: block;
+    width: 100%;
+    padding: 15px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #fff;
+    background-color: var(--accent-color);
+    border: none;
+    border-radius: var(--border-radius-main);
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s;
+    margin-top: 30px;
+}
+
+.submit-button:hover {
+    background-color: #E69500;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(255, 165, 0, 0.4);
+}
+
+@media (max-width: 768px) {
+    .avaliador-urbano-container {
+        margin: 20px;
+        padding: 15px;
+    }
+
+    .form-section {
+        padding: 20px;
+    }
+
+    .road-selection-row,
+    .transport-option-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* -----------------------------------------------------------------
+   7. Estilo para la Cabecera
+   ----------------------------------------------------------------- */
+.page-header-avaliador-urbano {
+    position: relative;
+    color: #fff;
+    background-image: url('https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2670&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center center;
+}
+
+.page-header-avaliador-urbano::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 90, 156, 0.75);
+    z-index: 1;
+}
+
+.page-header-avaliador-urbano .container {
+    position: relative;
+    z-index: 2;
+}

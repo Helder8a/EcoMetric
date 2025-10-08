@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+
+<head>
+    <!-- Google Tag Manager -->
+    <script>(function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-PQ2Q63GR');</script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Google adsense monetizar Strar-->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3196299619563199"
+        crossorigin="anonymous"></script>
+    <!-- Google adsense monetizar end-->
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manual de Uso | Avaliador Urbano PRO - PortugalApoia</title>
+    <meta name="description"
+        content="Aprende a usar todas las funciones del Avaliador Urbano PRO. Guía completa sobre el método Fito-Corvini, análisis de rentabilidad y generación de informes">
+    <meta name="keywords"
+        content="avaliação de imóveis, avaliador imobiliário, Fito-Corvini, método comparativo, custo de reposição, relatório de avaliação, perito avaliador, software imobiliário, análise de rentabilidade, Portugal">
+
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://portugalapoia.com/app_avaliadorurbano.html">
+    <meta property="og:title" content="Avaliador Urbano PRO | Avaliação de Imóveis e Relatórios">
+    <meta property="og:description"
+        content="Software de avaliação imobiliária para profissionais. Gere relatórios completos com o método Fito-Corvini, análise de rentabilidade e SWOT.">
+    <meta property="og:image" content="https://portugalapoia.com/images/img_portada.webp">
+
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://portugalapoia.com/app_avaliadorurbano.html">
+    <meta property="twitter:title" content="Avaliador Urbano PRO | Avaliação de Imóveis e Relatórios">
+    <meta property="twitter:description"
+        content="Software de avaliação imobiliária para profissionais. Gere relatórios completos com o método Fito-Corvini, análise de rentabilidade e SWOT.">
+    <meta property="twitter:image" content="https://portugalapoia.com/images/img_portada.webp">
+
+    <link rel="canonical" href="https://portugalapoia.com/manual_evaluador.html">
+
+    <link rel="apple-touch-icon" href="images_pta/logofavicon.ico">
+    <link rel="icon" href="images_pta/logofavicon.ico" type="image/png">
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" media="print"
+        onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Roboto:wght@400;500&display=swap">
+    </noscript>
+
+    <!-- modificar version v= cada vez que se modifique css start-->
+    <link rel="stylesheet" href="style.css?v=9">
+    <!-- modificar version v= cada vez que se modifique css end-->
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    </noscript>
+    <link rel="stylesheet" href="avaliador-urbano-style.css" media="print" onload="this.media='all'">
+    <noscript>
+        <link rel="stylesheet" href="avaliador-urbano-style.css">
+
+    </noscript>
+
+    <style>
+        :root {
+            --color-primary: #0a3d62;
+            --color-accent: #00834b;
+            --color-donation: #ffd700;
+            --font-headings: 'Inter', sans-serif;
+            --font-body: 'Roboto', sans-serif;
+            --border-radius: 8px;
+            --color-text: #333;
+            --color-background: #fff;
+            --color-background-light: #f8f9fa;
+            --color-border: #dee2e6;
+            --shadow: 0 5px 15px rgba(0, 0, 0, .07)
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-background-light);
+            position: relative;
+        }
+
+        .main-header {
+            background-color: var(--color-background);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .navbar-brand.logo {
+            color: var(--color-primary) !important;
+        }
+
+        .page-header {
+            background: linear-gradient(rgba(10, 61, 98, .9), rgba(10, 61, 98, .9));
+            padding: 60px 0;
+        }
+
+        .page-title {
+            font-family: var(--font-headings);
+            color: var(--color-donation);
+        }
+
+        .manual-section h2 {
+            font-family: var(--font-headings);
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--color-primary);
+            padding-top: 80px;
+            margin-top: -60px;
+        }
+
+        .manual-section h4 {
+            font-family: var(--font-headings);
+            font-size: 1.5rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--color-accent);
+        }
+
+        .info-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            margin: 15px auto;
+            display: block;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--color-border);
+        }
+
+        .chart-container {
+            width: 100%;
+            max-width: 700px;
+            margin: 2rem auto;
+            padding: 1.5rem;
+            background-color: #fff;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow);
+        }
+
+        #sidebar {
+            position: sticky;
+            top: 80px;
+            height: calc(100vh - 100px);
+            overflow-y: auto;
+        }
+
+        #sidebar .nav-link {
+            color: var(--color-primary);
+            font-weight: 600;
+            border-left: 3px solid transparent;
+        }
+
+        #sidebar .nav-link.active {
+            color: var(--color-accent);
+            border-left: 3px solid var(--color-accent);
+        }
+
+        .workflow-diagram {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 2rem 0;
+        }
+
+        .workflow-step {
+            text-align: center;
+        }
+
+        .workflow-icon {
+            width: 60px;
+            height: 60px;
+            background-color: var(--color-primary);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.8rem;
+            margin: 0 auto 10px;
+        }
+
+        .workflow-arrow {
+            font-size: 2rem;
+            color: var(--color-border);
+        }
+
+        .pro-tip {
+            background-color: #e7f3fe;
+            border-left: 5px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: var(--border-radius);
+        }
+
+        .pro-tip p {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+    var Tawk_API = Tawk_API || {}, Tawk_LoadStart = new Date();
+    (function () {
+        var s1 = document.createElement("script"), s0 = document.getElementsByTagName("script")[0];
+        s1.async = true;
+        s1.src = 'https://embed.tawk.to/68a5e36d427c8119275e97fe/1j3400ord';
+        s1.charset = 'UTF-8';
+        s1.setAttribute('crossorigin', '*');
+        s0.parentNode.insertBefore(s1, s0);
+    })();
+</script>
+<!--End of Tawk.to Script-->
+
+<body data-spy="scroll" data-target="#sidebar" data-offset="80">
+    <header class="main-header sticky-top">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand logo" href="index.html" style="display: inline-flex; align-items: center;">
+                    <img src="images_pta/logocuadrado.jpg" alt="Logo PortugalApoia"
+                        style="height: 35px; margin-right: 10px;">
+                    <span class="brand-text-responsive">PortugalApoia</span>
+                </a>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container-fluid my-5">
+        <div class="row">
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-none d-md-block">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item"><a class="nav-link" href="sobre-nos.html">Sobre Nós</a></li>
+                    <li class="nav-item"><a class="nav-link" href="doações.html">Doações</a></li>
+                    <li class="nav-item"><a class="nav-link" href="empregos.html">Emprego</a></li>
+                    <li class="nav-item"><a class="nav-link" href="serviços.html">Serviços</a></li>
+                    <li class="nav-item dropdown active">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWebApp" role="button"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Apps
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdownWebApp">
+                            <a class="dropdown-item" href="app_evaluadorsustentable.html">Avaliador Sustentável
+                                PRO</a>
+                            <a class="dropdown-item" href="app_avaliadorurbano.html">Avaliador de Imóveis
+                                Urbanos</a>
+                        </div>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link btn btn-primary publish-btn"
+                            href="publicar.html">Publicar</a></li>
+                </ul>
+            </nav>
+
+            <div class="col-md-9 col-lg-10">
+                <div id="section1" class="manual-section">
+                    <h2><i class="fas fa-rocket mr-3"></i>Inicio Rápido: Su Flujo de Trabajo</h2>
+                    <p>Comience a evaluar sus proyectos en 5 pasos intuitivos. Este diagrama ilustra el proceso
+                        completo, desde la configuración inicial hasta la exportación de resultados.</p>
+                    <div class="workflow-diagram">
+                        <div class="workflow-step">
+                            <div class="workflow-icon">1</div>
+                            <strong>Configurar</strong>
+                        </div>
+                        <div class="workflow-arrow d-none d-md-block">&rarr;</div>
+                        <div class="workflow-step">
+                            <div class="workflow-icon">2</div>
+                            <strong>Evaluar</strong>
+                        </div>
+                        <div class="workflow-arrow d-none d-md-block">&rarr;</div>
+                        <div class="workflow-step">
+                            <div class="workflow-icon">3</div>
+                            <strong>Analizar</strong>
+                        </div>
+                        <div class="workflow-arrow d-none d-md-block">&rarr;</div>
+                        <div class="workflow-step">
+                            <div class="workflow-icon">4</div>
+                            <strong>Guardar</strong>
+                        </div>
+                        <div class="workflow-arrow d-none d-md-block">&rarr;</div>
+                        <div class="workflow-step">
+                            <div class="workflow-icon">5</div>
+                            <strong>Exportar</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="section2" class="manual-section">
+                    <h2><i class="fas fa-cogs mr-3"></i>Funcionalidades Clave</h2>
+
+                    <h4>Base de Conocimiento Integrada</h4>
+                    <p>El evaluador es también una herramienta de aprendizaje. Para cada criterio, encontrará dos iconos
+                        de ayuda:</p>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-info-circle text-info mr-2"></i><strong>Información del Criterio:</strong>
+                            Le explica el objetivo, beneficios y le da un ejemplo práctico.</li>
+                        <li><i class="fas fa-cubes mr-2" style="color: var(--color-primary);"></i><strong>Soluciones de
+                                Mercado:</strong> Le muestra materiales y fabricantes reales en Portugal para cumplir
+                            con el crédito.</li>
+                    </ul>
+
+                    <h4>Gestión de Proyectos</h4>
+                    <p>Guarde y gestione múltiples evaluaciones. Ideal para comparar escenarios o trabajar en diferentes
+                        proyectos.</p>
+                    <img src="https://i.imgur.com/example-projects.png" alt="Panel de gestión de proyectos"
+                        class="info-image" style="max-width: 400px;">
+
+                    <div class="pro-tip">
+                        <p><i class="fas fa-lightbulb mr-2"></i><strong>Consejo de Profesional:</strong> Guarde
+                            diferentes versiones de su proyecto (ej. "Proyecto_con_CLT" y "Proyecto_con_Hormigon") para
+                            comparar el impacto de sus decisiones en la puntuación y la huella de carbono.</p>
+                    </div>
+                </div>
+
+                <div id="section3" class="manual-section">
+                    <h2><i class="fas fa-tools mr-3"></i>Herramientas Avanzadas</h2>
+
+                    <h4>Calculadora de Huella de Carbono</h4>
+                    <p>Calcule el carbono incorporado de su proyecto. Esta herramienta le permite cuantificar el impacto
+                        ambiental de sus elecciones de materiales.</p>
+                    <ol>
+                        <li>Haga clic en el botón <strong>"Calculadora de Carbono"</strong> en el panel lateral.</li>
+                        <li>Seleccione materiales de la lista (solo aparecen los que tienen datos de CO₂).</li>
+                        <li>Introduzca la cantidad. La tabla se actualizará automáticamente con el impacto total.</li>
+                    </ol>
+                    <div class="chart-container">
+                        <canvas id="carbonFootprintChart"></canvas>
+                    </div>
+
+                    <h4>Análisis del Coste del Ciclo de Vida (ACV)</h4>
+                    <p>Justifique económicamente sus decisiones. Esta calculadora, integrada en las "Soluciones de
+                        Mercado", estima el coste total de un material a lo largo de 50 años.</p>
+                    <p><strong>Para acceder:</strong> Vaya a <i class="fas fa-cubes"></i> Soluciones de Mercado y busque
+                        el botón <strong>"Analisar Custo de Ciclo de Vida"</strong>.</p>
+
+                    <h4>Análisis Comparativo Multi-Certificación</h4>
+                    <p>Obtenga una visión estratégica de cómo se comportaría su proyecto bajo los sistemas LiderA,
+                        BREEAM y LEED para decidir cuál es el más ventajoso.</p>
+                    <div class="chart-container">
+                        <canvas id="comparisonChartManual"></canvas>
+                    </div>
+                </div>
+
+                <div id="section4" class="manual-section">
+                    <h2><i class="fas fa-leaf mr-3"></i>Fundamentos de los Sistemas de Certificación</h2>
+
+                    <h4>LiderA (Portugal)</h4>
+                    <p>LiderA es el sistema de certificación portugués. Evalúa el desempeño en 6 áreas clave, asignando
+                        una puntuación que resulta en una clasificación desde **G** (la más baja) hasta **A++** (la más
+                        alta).</p>
+                    <div class="chart-container">
+                        <canvas id="lideraLevelsChart"></canvas>
+                    </div>
+
+                    <h4>BREEAM y LEED</h4>
+                    <p>Son los sistemas de certificación más reconocidos a nivel mundial. Aunque el evaluador se centra
+                        en LiderA, la herramienta de análisis comparativo le da una estimación de su rendimiento en
+                        estos sistemas.</p>
+                </div>
+
+                <div id="section5" class="manual-section">
+                    <h2><i class="fas fa-question-circle mr-3"></i>Preguntas Frecuentes (FAQ)</h2>
+                    <div id="faqAccordion">
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne">
+                                        ¿Por qué mi puntuación no cambia al marcar una casilla?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseOne" class="collapse show" data-parent="#faqAccordion">
+                                <div class="card-body">
+                                    Asegúrese de haber seleccionado un sistema de certificación (ej. LiderA) en el paso
+                                    1. La calculadora solo funciona si hay un sistema activo para evaluar.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingTwo">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed" data-toggle="collapse"
+                                        data-target="#collapseTwo">
+                                        ¿Mis proyectos se guardan en la nube?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseTwo" class="collapse" data-parent="#faqAccordion">
+                                <div class="card-body">
+                                    No. Por motivos de privacidad y simplicidad, todos sus proyectos se guardan
+                                    <strong>localmente en su navegador</strong>. Esto significa que si cambia de
+                                    navegador o borra los datos de navegación, los proyectos se perderán.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header" id="headingThree">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link collapsed" data-toggle="collapse"
+                                        data-target="#collapseThree">
+                                        Los valores de coste y CO₂ son solo aproximados, ¿verdad?
+                                    </button>
+                                </h5>
+                            </div>
+                            <div id="collapseThree" class="collapse" data-parent="#faqAccordion">
+                                <div class="card-body">
+                                    <strong>Correcto.</strong> Todos los valores en las calculadoras de Coste de Ciclo
+                                    de Vida y Huella de Carbono son <strong>estimaciones y valores aproximados</strong>
+                                    basados en medias de mercado para fines comparativos. No constituyen un presupuesto
+                                    ni una garantía.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Activar Scrollspy
+            $('body').scrollspy({ target: '#sidebar' });
+
+            // Datos para los gráficos
+            const lideraLevels = { "A++": 11, "A+": 9.5, "A": 8.0, "B": 6.5, "C": 5.0, "D": 3.5, "E": 2.0, "F": 1.0, "G": 0 };
+            const comparisonSampleData = {
+                labels: ['Integração Local', 'Recursos', 'Cargas Ambientais', 'Qualidade do Ambiente Interior', 'Vivências Socioeconómicas'],
+                datasets: [
+                    { label: 'LiderA', data: [75, 85, 60, 90, 70], backgroundColor: 'rgba(0, 131, 75, 0.2)', borderColor: 'rgba(0, 131, 75, 1)', borderWidth: 2 },
+                    { label: 'BREEAM (Estimado)', data: [70, 80, 55, 95, 65], backgroundColor: 'rgba(253, 190, 51, 0.2)', borderColor: 'rgba(253, 190, 51, 1)', borderWidth: 2 },
+                    { label: 'LEED (Estimado)', data: [80, 70, 75, 85, 75], backgroundColor: 'rgba(10, 61, 98, 0.2)', borderColor: 'rgba(10, 61, 98, 1)', borderWidth: 2 }
+                ]
+            };
+            const carbonSampleData = {
+                labels: ['Betão (Hormigón)', 'Madeira (CLT)', 'Isolamento (Lã Mineral)', 'Tintas'],
+                datasets: [{
+                    label: 'Huella de Carbono (kgCO₂e)',
+                    data: [12500, -8000, 3200, 500],
+                    backgroundColor: ['#dc3545', '#00834b', '#ffc107', '#6c757d']
+                }]
+            };
+
+            // Gráfico LiderA
+            new Chart(document.getElementById('lideraLevelsChart').getContext('2d'), {
+                type: 'bar', data: { labels: Object.keys(lideraLevels).reverse(), datasets: [{ label: 'Pontuação Mínima', data: Object.values(lideraLevels).reverse(), backgroundColor: '#00834b' }] },
+                options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false }, title: { display: true, text: 'Níveis de Certificação LiderA e Pontuação Mínima' } }, scales: { x: { beginAtZero: true, title: { display: true, text: 'Pontuação (de 20)' } } } }
+            });
+
+            // Gráfico Comparativo
+            new Chart(document.getElementById('comparisonChartManual').getContext('2d'), {
+                type: 'radar', data: comparisonSampleData,
+                options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: 'Exemplo de Análise Comparativa' } }, scales: { r: { suggestedMin: 0, suggestedMax: 100 } } }
+            });
+
+            // Gráfico Huella de Carbono
+            new Chart(document.getElementById('carbonFootprintChart').getContext('2d'), {
+                type: 'doughnut', data: carbonSampleData,
+                options: { responsive: true, plugins: { legend: { position: 'top' }, title: { display: true, text: 'Exemplo de Distribuição da Huella de Carbono' } } }
+            });
+        });
+    </script>
+</body>
+
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PQ2Q63GR" height="0" width="0"
+        style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+</html>
