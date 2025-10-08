@@ -2,30 +2,45 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const inputDefinitions = [
         {
-            sectionTitle: 'Datos del Terreno',
-            fields: [{ id: 'landArea', label: 'Área Total del Terreno (m²)', placeholder: 'ej: 10000' }]
+            sectionTitle: 'Land Data',
+            fields: [{ id: 'landArea', label: 'Total Land Area (m²)', placeholder: 'e.g., 10000' }]
         },
         {
-            sectionTitle: 'Normativa Urbanística',
+            sectionTitle: 'Urban Planning Regulations',
             fields: [
-                { id: 'floorAreaRatio', label: 'Índice de Edificabilidad (m²/m²)', placeholder: 'ej: 2.5' },
-                { id: 'maxLotCoverage', label: 'Ocupación Máxima de Parcela (%)', placeholder: 'ej: 60' },
-                { id: 'maxBuildingHeight', label: 'Altura Máxima (Nº de plantas)', placeholder: 'ej: 5' }
+                { id: 'floorAreaRatio', label: 'Floor Area Ratio (m²/m²)', placeholder: 'e.g., 2.5' },
+                { id: 'maxLotCoverage', label: 'Max Lot Coverage (%)', placeholder: 'e.g., 60' },
+                { id: 'maxBuildingHeight', label: 'Max Height (Number of floors)', placeholder: 'e.g., 5' }
             ]
         },
         {
-            sectionTitle: 'Datos Financieros',
+            sectionTitle: 'Financial Data',
             fields: [
-                { id: 'buildCost', label: 'Coste de Construcción (€/m²)', placeholder: 'ej: 950' },
-                { id: 'landCost', label: 'Coste Total del Terreno (€)', placeholder: 'ej: 500000' },
-                { id: 'sellPrice', label: 'Precio de Venta Estimado (€/m²)', placeholder: 'ej: 2100' }
+                { id: 'buildCost', label: 'Construction Cost ($/m²)', placeholder: 'e.g., 950' },
+                { id: 'landCost', label: 'Total Land Cost ($)', placeholder: 'e.g., 500000' },
+                { id: 'sellPrice', label: 'Estimated Sale Price ($/m²)', placeholder: 'e.g., 2100' }
             ]
         }
     ];
 
     const formsContainer = document.getElementById('input-forms-container');
 
-    const generateForms = () => { /* ...código sin cambios... */ };
+    const generateForms = () => {
+        let html = '';
+        inputDefinitions.forEach(section => {
+            html += `<div class="card mb-4"><div class="card-header"><h5>${section.sectionTitle}</h5></div><div class="card-body">`;
+            section.fields.forEach(field => {
+                html += `<div class="form-group">
+                           <label for="${field.id}">${field.label}</label>
+                           <input type="number" class="form-control" id="${field.id}" placeholder="${field.placeholder}">
+                         </div>`;
+            });
+            html += `</div></div>`;
+        });
+        if (formsContainer) {
+            formsContainer.innerHTML = html;
+        }
+    };
 
     const runAnalysis = () => {
         const getValue = (id) => parseFloat(document.getElementById(id).value) || 0;
@@ -60,20 +75,23 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const updateResults = (results) => {
-        const currencyFormat = { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 };
+        const currencyFormat = { style: 'currency', currency: 'USD', minimumFractionDigits: 0 };
         
-        document.getElementById('resBuildableArea').textContent = `${results.maxBuildableArea.toLocaleString('es-ES')} m²`;
-        document.getElementById('resFootprint').textContent = `${results.maxFootprint.toLocaleString('es-ES')} m²`;
+        document.getElementById('resBuildableArea').textContent = `${results.maxBuildableArea.toLocaleString('en-US')} m²`;
+        document.getElementById('resFootprint').textContent = `${results.maxFootprint.toLocaleString('en-US')} m²`;
         document.getElementById('resFloors').textContent = results.theoreticalFloors.toFixed(1);
         
-        document.getElementById('resConstructionCost').textContent = results.totalConstructionCost.toLocaleString('es-ES', currencyFormat);
-        document.getElementById('resTotalInvestment').textContent = results.totalInvestment.toLocaleString('es-ES', currencyFormat);
-        document.getElementById('resSalesRevenue').textContent = results.totalSalesRevenue.toLocaleString('es-ES', currencyFormat);
-        document.getElementById('resGrossProfit').textContent = results.grossProfit.toLocaleString('es-ES', currencyFormat);
+        document.getElementById('resConstructionCost').textContent = results.totalConstructionCost.toLocaleString('en-US', currencyFormat);
+        document.getElementById('resTotalInvestment').textContent = results.totalInvestment.toLocaleString('en-US', currencyFormat);
+        document.getElementById('resSalesRevenue').textContent = results.totalSalesRevenue.toLocaleString('en-US', currencyFormat);
+        document.getElementById('resGrossProfit').textContent = results.grossProfit.toLocaleString('en-US', currencyFormat);
         document.getElementById('resMargin').textContent = `${results.margin.toFixed(2)} %`;
         document.getElementById('resROI').textContent = `${results.roi.toFixed(2)} %`;
     };
 
     generateForms();
-    document.getElementById('analyzeBtn').addEventListener('click', runAnalysis);
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    if (analyzeBtn) {
+        analyzeBtn.addEventListener('click', runAnalysis);
+    }
 });

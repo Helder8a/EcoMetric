@@ -7,37 +7,41 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const propertyFields = {
         Apartment: `
-            <div class="form-group"><label for="area">Área Bruta Privada (m²)</label><input type="number" class="form-control" id="area" placeholder="ej: 120"></div>
-            <div class="form-group"><label for="bedrooms">Nº de Habitaciones</label><input type="number" class="form-control" id="bedrooms" placeholder="ej: 3"></div>
-            <div class="form-group"><label for="floor">Planta</label><input type="number" class="form-control" id="floor" placeholder="ej: 2"></div>
-            <div class="form-group"><label for="marketValue">Valor de Mercado/m² en la zona (€)</label><input type="number" class="form-control" id="marketValue" placeholder="ej: 2500"></div>
+            <div class="form-group"><label for="area">Private Gross Area (m²)</label><input type="number" class="form-control" id="area" placeholder="e.g., 120"></div>
+            <div class="form-group"><label for="bedrooms">Number of Bedrooms</label><input type="number" class="form-control" id="bedrooms" placeholder="e.g., 3"></div>
+            <div class="form-group"><label for="floor">Floor Level</label><input type="number" class="form-control" id="floor" placeholder="e.g., 2"></div>
+            <div class="form-group"><label for="marketValue">Market Value/m² in the area ($)</label><input type="number" class="form-control" id="marketValue" placeholder="e.g., 2500"></div>
         `,
         House: `
-            <div class="form-group"><label for="area">Área Bruta de Construcción (m²)</label><input type="number" class="form-control" id="area" placeholder="ej: 250"></div>
-            <div class="form-group"><label for="landArea">Área de Terreno (m²)</label><input type="number" class="form-control" id="landArea" placeholder="ej: 500"></div>
-            <div class="form-group"><label for="marketValue">Valor de Mercado/m² en la zona (€)</label><input type="number" class="form-control" id="marketValue" placeholder="ej: 2200"></div>
+            <div class="form-group"><label for="area">Gross Construction Area (m²)</label><input type="number" class="form-control" id="area" placeholder="e.g., 250"></div>
+            <div class="form-group"><label for="landArea">Land Area (m²)</label><input type="number" class="form-control" id="landArea" placeholder="e.g., 500"></div>
+            <div class="form-group"><label for="marketValue">Market Value/m² in the area ($)</label><input type="number" class="form-control" id="marketValue" placeholder="e.g., 2200"></div>
         `,
         Land: `
-            <div class="form-group"><label for="area">Área Total del Terreno (m²)</label><input type="number" class="form-control" id="area" placeholder="ej: 5000"></div>
-            <div class="form-group"><label for="far">Índice de Edificabilidad (m²/m²)</label><input type="number" class="form-control" id="far" placeholder="ej: 0.8"></div>
-            <div class="form-group"><label for="marketValue">Valor de Repercusión del Suelo/m² edificable (€)</label><input type="number" class="form-control" id="marketValue" placeholder="ej: 800"></div>
+            <div class="form-group"><label for="area">Total Land Area (m²)</label><input type="number" class="form-control" id="area" placeholder="e.g., 5000"></div>
+            <div class="form-group"><label for="far">Floor Area Ratio (m²/m²)</label><input type="number" class="form-control" id="far" placeholder="e.g., 0.8"></div>
+            <div class="form-group"><label for="marketValue">Land Value per buildable m² ($)</label><input type="number" class="form-control" id="marketValue" placeholder="e.g., 800"></div>
         `
     };
 
-    propertyTypeSelector.addEventListener('change', () => {
-        const selectedType = propertyTypeSelector.value;
-        dynamicFieldsContainer.innerHTML = propertyFields[selectedType] || '';
-    });
+    if (propertyTypeSelector) {
+        propertyTypeSelector.addEventListener('change', () => {
+            const selectedType = propertyTypeSelector.value;
+            if (dynamicFieldsContainer) {
+                dynamicFieldsContainer.innerHTML = propertyFields[selectedType] || '';
+            }
+        });
+    }
 
-    valuationForm.addEventListener('submit', () => {
-        generateReport();
-    });
+    if (valuationForm) {
+        valuationForm.addEventListener('submit', generateReport);
+    }
 
     function generateReport() {
-        const applicantName = getEl('applicantName').value || 'No especificado';
-        const evaluatorName = getEl('evaluatorName').value || 'EcoMetric Evaluator';
+        const applicantName = getEl('applicantName')?.value || 'Not specified';
+        const evaluatorName = getEl('evaluatorName')?.value || 'EcoMetric Evaluator';
         const propertyType = propertyTypeSelector.value;
-        const today = new Date().toLocaleDateString('es-ES');
+        const today = new Date().toLocaleDateString('en-US');
 
         const getValue = id => parseFloat(getEl(id)?.value) || 0;
         let valuation = 0;
@@ -49,23 +53,23 @@ document.addEventListener('DOMContentLoaded', function () {
                 const areaApt = getValue('area');
                 const marketValueApt = getValue('marketValue');
                 valuation = areaApt * marketValueApt;
-                detailsHTML = `<li><strong>Área Bruta Privada:</strong> ${areaApt} m²</li><li><strong>Nº Habitaciones:</strong> ${getValue('bedrooms')}</li>`;
+                detailsHTML = `<li><strong>Private Gross Area:</strong> ${areaApt} m²</li><li><strong>Number of Bedrooms:</strong> ${getValue('bedrooms')}</li>`;
                 swotHTML = `
-                    <p><strong>Fortalezas:</strong> Demanda estable en centros urbanos.</p>
-                    <p><strong>Debilidades:</strong> Gastos de comunidad, normativas de propiedad horizontal.</p>
-                    <p><strong>Oportunidades:</strong> Potencial para alquiler a corto o largo plazo.</p>
-                    <p><strong>Amenazas:</strong> Fluctuaciones del mercado inmobiliario, aumento de tipos de interés.</p>`;
+                    <p><strong>Strengths:</strong> Stable demand in urban centers.</p>
+                    <p><strong>Weaknesses:</strong> Condo fees, horizontal property regulations.</p>
+                    <p><strong>Opportunities:</strong> Potential for short or long-term rental.</p>
+                    <p><strong>Threats:</strong> Real estate market fluctuations, rising interest rates.</p>`;
                 break;
             case 'House':
                 const areaHouse = getValue('area');
                 const marketValueHouse = getValue('marketValue');
                 valuation = areaHouse * marketValueHouse;
-                detailsHTML = `<li><strong>Área Bruta Construcción:</strong> ${areaHouse} m²</li><li><strong>Área Terreno:</strong> ${getValue('landArea')} m²</li>`;
+                detailsHTML = `<li><strong>Gross Construction Area:</strong> ${areaHouse} m²</li><li><strong>Land Area:</strong> ${getValue('landArea')} m²</li>`;
                  swotHTML = `
-                    <p><strong>Fortalezas:</strong> Mayor privacidad y espacio, potencial de ampliación.</p>
-                    <p><strong>Debilidades:</strong> Mayores costes de mantenimiento que un apartamento.</p>
-                    <p><strong>Oportunidades:</strong> Valorización por mejoras en el jardín o eficiencia energética.</p>
-                    <p><strong>Amenazas:</strong> Impuestos sobre la propiedad más elevados, desarrollo urbano cercano.</p>`;
+                    <p><strong>Strengths:</strong> Greater privacy and space, potential for expansion.</p>
+                    <p><strong>Weaknesses:</strong> Higher maintenance costs than an apartment.</p>
+                    <p><strong>Opportunities:</strong> Value increase from garden or energy efficiency improvements.</p>
+                    <p><strong>Threats:</strong> Higher property taxes, nearby urban development.</p>`;
                 break;
             case 'Land':
                 const areaLand = getValue('area');
@@ -73,23 +77,26 @@ document.addEventListener('DOMContentLoaded', function () {
                 const marketValueLand = getValue('marketValue');
                 const buildableArea = areaLand * far;
                 valuation = buildableArea * marketValueLand;
-                detailsHTML = `<li><strong>Área Total:</strong> ${areaLand} m²</li><li><strong>Área Edificable Potencial:</strong> ${buildableArea.toFixed(2)} m²</li>`;
+                detailsHTML = `<li><strong>Total Area:</strong> ${areaLand} m²</li><li><strong>Potential Buildable Area:</strong> ${buildableArea.toFixed(2)} m²</li>`;
                 swotHTML = `
-                    <p><strong>Fortalezas:</strong> Flexibilidad para desarrollar un proyecto a medida.</p>
-                    <p><strong>Debilidades:</strong> Requiere una inversión inicial elevada para la construcción, incertidumbre normativa.</p>
-                    <p><strong>Oportunidades:</strong> Desarrollo de proyectos con alta demanda (residencial, comercial).</p>
-                    <p><strong>Amenazas:</strong> Cambios en la planificación urbana, retrasos en la obtención de licencias.</p>`;
+                    <p><strong>Strengths:</strong> Flexibility to develop a custom project.</p>
+                    <p><strong>Weaknesses:</strong> Requires high initial investment for construction, regulatory uncertainty.</p>
+                    <p><strong>Opportunities:</strong> Development of high-demand projects (residential, commercial).</p>
+                    <p><strong>Threats:</strong> Changes in urban planning, delays in obtaining licenses.</p>`;
                 break;
         }
 
         const reportHTML = `
-            <div class="report-header text-center mb-4"><h2>Informe de Tasación Comercial</h2><p><strong>Fecha de Emisión:</strong> ${today}</p></div>
-            <div class="card p-4 mb-4"><h4>1. Datos Generales</h4><p><strong>Solicitante:</strong> ${applicantName}</p><p><strong>Tasador:</strong> ${evaluatorName}</p><p><strong>Tipo de Activo:</strong> ${propertyType}</p></div>
-            <div class="card p-4 mb-4"><h4>2. Detalles y Valoración</h4><ul>${detailsHTML}</ul><hr><div class="text-center"><h4>Valor de Mercado Estimado</h4><h2 class="text-success">${valuation.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })}</h2></div></div>
-            <div class="card p-4"><h4>3. Análisis SWOT Preliminar</h4>${swotHTML}</div>
+            <div class="report-header text-center mb-4"><h2>Commercial Appraisal Report</h2><p><strong>Issue Date:</strong> ${today}</p></div>
+            <div class="card p-4 mb-4"><h4>1. General Information</h4><p><strong>Applicant:</strong> ${applicantName}</p><p><strong>Appraiser:</strong> ${evaluatorName}</p><p><strong>Asset Type:</strong> ${propertyType}</p></div>
+            <div class="card p-4 mb-4"><h4>2. Details and Valuation</h4><ul>${detailsHTML}</ul><hr><div class="text-center"><h4>Estimated Market Value</h4><h2 class="text-success">${valuation.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</h2></div></div>
+            <div class="card p-4"><h4>3. Preliminary SWOT Analysis</h4>${swotHTML}</div>
         `;
 
-        getEl('reportOutput').innerHTML = reportHTML;
+        const reportOutput = getEl('reportOutput');
+        if (reportOutput) {
+            reportOutput.innerHTML = reportHTML;
+        }
         $('#reportModal').modal('show');
     }
 });
@@ -97,7 +104,7 @@ document.addEventListener('DOMContentLoaded', function () {
 function printReport() {
     const reportContent = document.getElementById('reportOutput').innerHTML;
     const printWindow = window.open('', '', 'height=800,width=800');
-    printWindow.document.write('<html><head><title>Informe de Tasación</title>');
+    printWindow.document.write('<html><head><title>Appraisal Report</title>');
     printWindow.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"><link rel="stylesheet" href="style.css">');
     printWindow.document.write('</head><body><div class="container py-4">' + reportContent + '</div></body></html>');
     printWindow.document.close();

@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tasador Urbano PRO | Tasación de Inmuebles - EcoMetric</title>
-    <meta name="description" content="Software de tasación de inmuebles para profesionales. Genere informes completos con análisis de rentabilidad y SWOT.">
+    <title>Urban Appraiser PRO | Property Valuation - EcoMetric</title>
+    <meta name="description" content="Property valuation software for professionals. Generate complete reports with profitability and SWOT analysis.">
     <link rel="icon" href="images/favicon.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="preloader"><img src="images/logo_square.jpg" alt="Cargando..." class="spinner"></div>
+    <div id="preloader"><img src="images/logo_square.jpg" alt="Loading..." class="spinner"></div>
 
     <header class="main-header">
          <nav class="navbar navbar-expand-lg">
@@ -26,12 +26,12 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWebApp" role="button" data-toggle="dropdown">Apps</a>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="app_sustainability_evaluator.html">Evaluador de Sostenibilidad</a>
-                                <a class="dropdown-item" href="app_urban_evaluator.html">Tasador Urbano</a>
-                                <a class="dropdown-item" href="app_investment_analysis.html">Análisis de Inversión</a>
+                                <a class="dropdown-item" href="app_sustainability_evaluator.html">Sustainability Evaluator</a>
+                                <a class="dropdown-item" href="app_urban_evaluator.html">Urban Appraiser</a>
+                                <a class="dropdown-item" href="app_investment_analysis.html">Investment Analysis</a>
                             </div>
                         </li>
-                        <li class="nav-item"><a class="nav-link" href="contact.html">Contacto</a></li>
+                        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
                     </ul>
                 </div>
             </div>
@@ -41,8 +41,8 @@
     <main>
         <section class="page-header page-header-urban-evaluator text-center">
             <div class="container">
-                <h1 class="page-title">Tasador Urbano PRO</h1>
-                <p class="lead">Herramienta avanzada para tasaciones comerciales de inmuebles urbanos con informes detallados.</p>
+                <h1 class="page-title">Urban Appraiser PRO</h1>
+                <p class="lead">Advanced tool for commercial appraisals of urban properties with detailed reports.</p>
             </div>
         </section>
 
@@ -50,28 +50,28 @@
             <div class="evaluator-main-content">
                 <form id="urban-evaluator-app" onsubmit="return false;">
                     <div class="card mb-4">
-                        <div class="card-header"><h4>1. Datos Generales de la Tasación</h4></div>
+                        <div class="card-header"><h4>1. General Appraisal Data</h4></div>
                         <div class="card-body">
-                            <div class="form-group"><label for="applicantName">Identificación del Solicitante</label><input type="text" class="form-control" id="applicantName" placeholder="Nombre del solicitante"></div>
-                            <div class="form-group"><label for="evaluatorName">Identificación del Tasador</label><input type="text" class="form-control" id="evaluatorName" placeholder="Nombre del tasador"></div>
+                            <div class="form-group"><label for="applicantName">Applicant Identification</label><input type="text" class="form-control" id="applicantName" placeholder="Applicant's name"></div>
+                            <div class="form-group"><label for="evaluatorName">Appraiser Identification</label><input type="text" class="form-control" id="evaluatorName" placeholder="Appraiser's name"></div>
                         </div>
                     </div>
                     <div class="card mb-4">
-                        <div class="card-header"><h4>2. Tipología y Detalles del Inmueble</h4></div>
+                        <div class="card-header"><h4>2. Property Type and Details</h4></div>
                         <div class="card-body">
                             <div class="form-group">
-                                <label for="propertyType">Tipo de Inmueble</label>
+                                <label for="propertyType">Property Type</label>
                                 <select class="form-control" id="propertyType">
-                                    <option value="" selected disabled>Seleccione un tipo...</option>
-                                    <option value="Apartment">Apartamento</option>
-                                    <option value="House">Vivienda Unifamiliar</option>
-                                    <option value="Land">Terreno Urbano</option>
+                                    <option value="" selected disabled>Select a type...</option>
+                                    <option value="Apartment">Apartment</option>
+                                    <option value="House">Single-Family Home</option>
+                                    <option value="Land">Urban Land</option>
                                 </select>
                             </div>
                             <div id="dynamicFields"></div>
                         </div>
                     </div>
-                    <div class="text-center mt-4"><button type="submit" class="btn btn-primary btn-lg">Generar Informe de Tasación</button></div>
+                    <div class="text-center mt-4"><button type="submit" class="btn btn-primary btn-lg">Generate Appraisal Report</button></div>
                 </form>
             </div>
         </div>
@@ -80,9 +80,9 @@
     <div class="modal fade" id="reportModal" tabindex="-1">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header"><h5 class="modal-title">Informe de Tasación de Inmueble</h5><button class="close" data-dismiss="modal">&times;</button></div>
+                <div class="modal-header"><h5 class="modal-title">Property Appraisal Report</h5><button class="close" data-dismiss="modal">&times;</button></div>
                 <div class="modal-body" id="reportOutput"></div>
-                <div class="modal-footer"><button class="btn btn-secondary" data-dismiss="modal">Cerrar</button><button class="btn btn-primary" onclick="printReport();"><i class="fas fa-print mr-2"></i>Imprimir Informe</button></div>
+                <div class="modal-footer"><button class="btn btn-secondary" data-dismiss="modal">Close</button><button class="btn btn-primary" onclick="printReport();"><i class="fas fa-print mr-2"></i>Print Report</button></div>
             </div>
         </div>
     </div>

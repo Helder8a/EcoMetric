@@ -15,7 +15,7 @@ const certificationsDB = {
                         objective: "Optimization of the project design according to local climatic conditions.",
                         example: "Building in Lisbon with south-facing glass facades protected by overhangs.",
                         benefits: "Reduction in air conditioning needs.",
-                        normativa_pt: { name: "REH - Energy Performance Regulation for Residential Buildings (Decree-Law No. 101-D/2020)", link: "https://dre.pt/dre/detalhe/decreto-lei/101-d-2020-150799381" },
+                        normativa_pt: { name: "REH - Regulamento de Desempenho Energético dos Edifícios de Habitação (Decreto-Lei n.º 101-D/2020)", link: "https://dre.pt/dre/detalhe/decreto-lei/101-d-2020-150799381" },
                         descriptive_report: "The building's design considered the site's bioclimatic characteristics. Solar orientation was optimized to maximize solar gains in winter and minimize them in summer, and protections against dominant winds were implemented, contributing to thermal comfort and reduced energy consumption."
                     },
                     credits: { "Optimized solar orientation": .4, "Protection against dominant winds": .2, "Adequate shadow study": .2 }
@@ -27,7 +27,7 @@ const certificationsDB = {
                         objective: "Use insulation materials with low environmental impact and high efficiency.",
                         example: "Wall insulation with expanded cork agglomerate.",
                         benefits: "Improved thermal and acoustic comfort, and reduced energy bills.",
-                        normativa_pt: { name: "REH - Annex III (Thermal performance of envelope components)", link: "https://dre.pt/dre/detalhe/decreto-lei/101-d-2020-150799381" },
+                        normativa_pt: { name: "REH - Anexo III (Desempenho térmico de componentes da envolvente)", link: "https://dre.pt/dre/detalhe/decreto-lei/101-d-2020-150799381" },
                         descriptive_report: "High-performance, low-impact materials were selected for the building's envelope insulation. This choice aims to ensure excellent thermal and acoustic comfort, complying with REH requirements and significantly reducing the need for artificial climate control."
                     },
                     solutions_pt: [
@@ -43,7 +43,7 @@ const certificationsDB = {
                         objective: "Employ structural and enclosure systems with renewable or recycled materials.",
                         example: "Building structure in Cross-Laminated Timber (CLT).",
                         benefits: "Reduced construction time, lighter structure, and carbon sequestration.",
-                        normativa_pt: { name: "Structural Eurocodes (e.g., Eurocode 5 for timber)", link: "http://www.lnec.pt/pt/atividades/normalizacao/eurocodigos-estruturais/" },
+                        normativa_pt: { name: "Eurocódigos Estruturais (e.g., Eurocódigo 5 para madeira)", link: "http://www.lnec.pt/pt/atividades/normalizacao/eurocodigos-estruturais/" },
                         descriptive_report: "The project's structure was designed using low embodied carbon materials, such as certified wood (FSC/PEFC) in CLT systems, or compressed earth blocks (CEB). These solutions, besides being sustainable, comply with the applicable Structural Eurocodes and contribute to reducing the overall carbon footprint of the construction."
                     },
                     solutions_pt: [
@@ -60,7 +60,7 @@ const certificationsDB = {
                         objective: "Minimization of waste production.",
                         example: "Construction plan that diverts >70% of waste for recycling.",
                         benefits: "Reduction of landfill waste.",
-                        normativa_pt: { name: "RGGR - General Waste Management Regime (Decree-Law No. 102-D/2020)", link: "https://dre.pt/dre/detalhe/decreto-lei/102-d-2020-151049581" },
+                        normativa_pt: { name: "RGGR - Regime Geral de Gestão de Resíduos (Decreto-Lei n.º 102-D/2020)", link: "https://dre.pt/dre/detalhe/decreto-lei/102-d-2020-151049581" },
                         descriptive_report: "A rigorous on-site waste management plan was implemented, in accordance with the RGGR, aiming to divert over 70% of waste to recycling and reuse. Additionally, the project includes dedicated spaces for domestic waste separation for future users, promoting sustainability in the operational phase."
                     },
                     credits: { "Construction waste management plan (>70% diverted)": .6, "Space for domestic waste separation": .4 }
@@ -72,7 +72,7 @@ const certificationsDB = {
                         objective: "Ensure a healthy and comfortable indoor environment, free of toxic emissions.",
                         example: "Design for natural ventilation and use paints without VOCs.",
                         benefits: "Healthier and more productive environment.",
-                        normativa_pt: { name: "RECS - Regulation for Commercial and Service Buildings (part of REH)", link: "https://dre.pt/dre/detalhe/decreto-lei/101-d-2020-150799381" },
+                        normativa_pt: { name: "RECS - Regulamento de Edifícios de Comércio e Serviços (parte do REH)", link: "https://dre.pt/dre/detalhe/decreto-lei/101-d-2020-150799381" },
                         descriptive_report: "Indoor environmental quality was a priority, ensured through a design for cross-ventilation and the specification of materials with low or zero Volatile Organic Compound (VOC) emissions, such as ecological paints and varnishes. These measures aim to ensure a healthy environment for occupants, in line with best practices and applicable regulations."
                     },
                     solutions_pt: [
