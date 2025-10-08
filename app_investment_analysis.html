@@ -59,15 +59,35 @@
                             <h3 class="text-center mb-4">📊 Analysis Results</h3>
                             <div class="mb-4">
                                 <h4>Urban Potential</h4>
-                                <ul class="list-group"><li class="list-group-item d-flex justify-content-between">Max Buildable Area: <strong id="resBuildableArea">0 m²</strong></li><li class="list-group-item d-flex justify-content-between">Max Footprint: <strong id="resFootprint">0 m²</strong></li><li class="list-group-item d-flex justify-content-between">Theoretical Floors: <strong id="resFloors">0</strong></li></ul>
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between">Max Buildable Area: <strong id="resBuildableArea">0 m²</strong></li>
+                                    <li class="list-group-item d-flex justify-content-between">Max Footprint: <strong id="resFootprint">0 m²</strong></li>
+                                    <li class="list-group-item d-flex justify-content-between">Theoretical Floors: <strong id="resFloors">0</strong></li>
+                                    <li class="list-group-item d-flex justify-content-between">Total Residential Units: <strong id="resTotalUnits">0</strong></li>
+                                </ul>
+                            </div>
+                             <div class="mb-4">
+                                <h4>Parking Analysis</h4>
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between">Total Car Spaces: <strong id="resCarSpaces">0</strong></li>
+                                    <li class="list-group-item d-flex justify-content-between">Total Bicycle Spaces: <strong id="resBikeSpaces">0</strong></li>
+                                    <li class="list-group-item d-flex justify-content-between">Required Parking Area: <strong id="resParkingArea">0 m²</strong></li>
+                                </ul>
                             </div>
                             <div class="mb-4">
                                 <h4>Financial Viability</h4>
-                                <ul class="list-group"><li class="list-group-item d-flex justify-content-between">Total Construction Cost: <strong id="resConstructionCost">$0</strong></li><li class="list-group-item d-flex justify-content-between">Total Investment: <strong id="resTotalInvestment">$0</strong></li><li class="list-group-item d-flex justify-content-between">Sales Revenue: <strong id="resSalesRevenue">$0</strong></li><li class="list-group-item d-flex justify-content-between text-success"><strong>Gross Profit:</strong> <strong id="resGrossProfit">$0</strong></li><li class="list-group-item d-flex justify-content-between text-info"><strong>Margin on Sales:</strong> <strong id="resMargin">0 %</strong></li><li class="list-group-item d-flex justify-content-between text-primary"><strong>Return on Investment (ROI):</strong> <strong id="resROI">0 %</strong></li></ul>
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between">Total Construction Cost: <strong id="resConstructionCost">$0</strong></li>
+                                    <li class="list-group-item d-flex justify-content-between">Total Investment: <strong id="resTotalInvestment">$0</strong></li>
+                                    <li class="list-group-item d-flex justify-content-between">Sales Revenue (Net): <strong id="resSalesRevenue">$0</strong></li>
+                                    <li class="list-group-item d-flex justify-content-between text-success"><strong>Gross Profit:</strong> <strong id="resGrossProfit">$0</strong></li>
+                                    <li class="list-group-item d-flex justify-content-between text-info"><strong>Margin on Sales:</strong> <strong id="resMargin">0 %</strong></li>
+                                    <li class="list-group-item d-flex justify-content-between text-primary"><strong>Return on Investment (ROI):</strong> <strong id="resROI">0 %</strong></li>
+                                </ul>
                             </div>
                             <div>
                                 <h4>Notes and Assumptions</h4>
-                                <small class="text-muted">This is a preliminary analysis. Calculations do not include VAT, licensing costs, financial costs, or marketing expenses. ROI is calculated on the total investment (land + construction).</small>
+                                <small class="text-muted">This is a preliminary analysis. Calculations do not include VAT, licensing, or marketing costs. The required parking area is included in the total construction cost but is considered non-sellable area, reducing the final sales revenue.</small>
                             </div>
                         </div>
                     </aside>
@@ -77,7 +97,7 @@
     </main>
     
     <footer class="main-footer">
-        </footer>
+    </footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
