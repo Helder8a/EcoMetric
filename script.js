@@ -1,7 +1,7 @@
-// --- CÓDIGO FINAL, ESTABLE Y CON ANUNCIOS FUNCIONANDO ---
+// --- FINAL, STABLE CODE WITH WORKING ADS ---
 
 document.addEventListener("DOMContentLoaded", () => {
-    // --- GESTORES BÁSICOS (Preloader, Scroll, etc.) ---
+    // --- BASIC HANDLERS (Preloader, Scroll, etc.) ---
     const preloader = document.getElementById("preloader");
     if (preloader) {
         window.addEventListener("load", () => preloader.classList.add("hidden"));
@@ -18,20 +18,21 @@ document.addEventListener("DOMContentLoaded", () => {
         scrollTopBtn.addEventListener("click", () => window.scrollTo({ top: 0, behavior: "smooth" }));
     }
 
-    // --- FUNCIÓN PARA LEER DATOS JSON ---
+    // --- FUNCTION TO READ JSON DATA ---
     async function fetchJson(url) {
         try {
+            // Appending a timestamp to prevent caching issues
             const response = await fetch(`${url}?t=${new Date().getTime()}`);
             if (!response.ok) return null;
             return await response.json();
         } catch (error) {
-            console.error(`Error al cargar ${url}:`, error);
+            console.error(`Error loading ${url}:`, error);
             return null;
         }
     }
 
-    // --- FUNCIÓN DE LAZY LOADING PARA IMÁGENES ---
-    function ativarLazyLoading() {
+    // --- LAZY LOADING FUNCTION FOR IMAGES ---
+    function activateLazyLoading() {
         const lazyImages = document.querySelectorAll("img.lazy:not(.loaded)");
         if ("IntersectionObserver" in window) {
             const observer = new IntersectionObserver((entries) => {
@@ -46,38 +47,46 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             });
             lazyImages.forEach(img => observer.observe(img));
+        } else {
+            // Fallback for older browsers
+            lazyImages.forEach(img => {
+                img.src = img.dataset.src;
+                img.classList.remove("lazy");
+                img.classList.add("loaded");
+            });
         }
     }
     
-    // --- FUNCIÓN MEJORADA PARA CREAR TARJETAS DE ANUNCIOS ---
+    // --- IMPROVED FUNCTION TO CREATE ADVERTISEMENT CARDS ---
     function renderCard(item, category) {
         const defaultImagePlaceholder = '<div class="image-placeholder"></div>';
-        let imageUrl = item.imagem || item.logo_empresa || (item.imagens && item.imagens.length > 0 ? item.imagens[0].imagem_url : null);
+        // Unified image source logic
+        let imageUrl = item.image || item.company_logo || (item.images && item.images.length > 0 ? item.images[0].image_url : null);
         
         const imageHtml = imageUrl 
-            ? `<img src="${imageUrl}" class="card-img-top lazy" data-src="${imageUrl}" alt="${item.titulo}">`
+            ? `<img src="${imageUrl}" class="card-img-top lazy" data-src="${imageUrl}" alt="${item.title}">`
             : defaultImagePlaceholder;
 
         return `
-        <div class="col-lg-4 col-md-6 mb-4 announcement-card" data-title="${item.titulo}" data-location="${item.localizacao}">
+        <div class="col-lg-4 col-md-6 mb-4 announcement-card" data-title="${item.title}" data-location="${item.location}">
             <div class="card h-100">
                 <div class="card-number">${item.id || ''}</div>
                 ${imageHtml}
                 <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">${item.titulo}</h5>
-                    <h6 class="card-subtitle mb-2 text-muted"><i class="fas fa-map-marker-alt mr-2"></i> ${item.localizacao}</h6>
-                    <p class="card-text flex-grow-1">${item.descricao}</p>
+                    <h5 class="card-title">${item.title}</h5>
+                    <h6 class="card-subtitle mb-2 text-muted"><i class="fas fa-map-marker-alt mr-2"></i> ${item.location}</h6>
+                    <p class="card-text flex-grow-1">${item.description}</p>
                     <div class="card-contact-icons mt-auto">
-                        ${item.contato ? `<a href="tel:${item.contato}" class="contact-icon" title="Contactar por Telefone"><i class="fas fa-phone"></i> <span>${item.contato}</span></a>` : ''}
-                        ${item.link_contato ? `<a href="${item.link_contato}" class="contact-icon" title="Contactar por Email"><i class="fas fa-envelope"></i> <span>Email</span></a>` : ''}
+                        ${item.contact ? `<a href="tel:${item.contact}" class="contact-icon" title="Contact by Phone"><i class="fas fa-phone"></i> <span>${item.contact}</span></a>` : ''}
+                        ${item.contact_link ? `<a href="${item.contact_link}" class="contact-icon" title="Contact by Email"><i class="fas fa-envelope"></i> <span>Email</span></a>` : ''}
                     </div>
                 </div>
             </div>
         </div>`;
     }
 
-    // --- FUNCIÓN GLOBAL PARA CARGAR TODO EL CONTENIDO ---
-    async function carregarConteudo(jsonPath, containerId, dataKey) {
+    // --- GLOBAL FUNCTION TO LOAD ALL CONTENT ---
+    async function loadContent(jsonPath, containerId, dataKey) {
         const container = document.getElementById(containerId);
         if (!container) return;
 
@@ -85,38 +94,41 @@ document.addEventListener("DOMContentLoaded", () => {
         const items = data ? data[dataKey] : [];
 
         if (!items || items.length === 0) {
-            container.innerHTML = '<p class="col-12 text-center lead text-muted mt-5">De momento, não há publicações nesta secção.</p>';
+            container.innerHTML = '<p class="col-12 text-center lead text-muted mt-5">Currently, there are no posts in this section.</p>';
             return;
         }
 
-        items.sort((a, b) => new Date(b.data_publicacao || 0) - new Date(a.data_publicacao || 0));
+        // Sort by publication date, newest first
+        items.sort((a, b) => new Date(b.publication_date || 0) - new Date(a.publication_date || 0));
         container.innerHTML = items.map(item => renderCard(item, dataKey)).join('');
-        ativarLazyLoading();
+        activateLazyLoading();
     }
     
-    // --- INICIALIZACIÓN DE LAS CARGAS ---
+    // --- INITIALIZE CONTENT LOADING ---
     if (document.getElementById('announcements-grid')) {
-        carregarConteudo('/_dados/doacoes.json', 'announcements-grid', 'pedidos');
+        loadContent('/_data/donations.json', 'announcements-grid', 'requests');
     }
     if (document.getElementById('jobs-grid')) {
-        carregarConteudo('/_dados/empregos.json', 'jobs-grid', 'vagas');
+        loadContent('/_data/jobs.json', 'jobs-grid', 'vacancies');
     }
     if (document.getElementById('services-grid')) {
-        carregarConteudo('/_dados/servicos.json', 'services-grid', 'servicos');
+        loadContent('/_data/services.json', 'services-grid', 'services');
     }
     if (document.getElementById('housing-grid')) {
-        carregarConteudo('/_dados/habitacao.json', 'housing-grid', 'anuncios');
+        loadContent('/_data/housing.json', 'housing-grid', 'listings');
     }
     
-    ativarLazyLoading();
+    // Initial call for any images that might already be in view
+    activateLazyLoading();
 });
 
 /**
- * Gera e insere o script JSON-LD para um anúncio de emprego no <head> da página.
- * @param {object} job - O objeto do anúncio de emprego com todos os dados.
+ * Generates and inserts the JSON-LD script for a job posting into the page's <head>.
+ * This is great for SEO, helping Google understand the job details.
+ * @param {object} job - The job posting object with all the data.
  */
 function injectJobPostingSchema(job) {
-    // Remove qualquer schema de emprego antigo para evitar duplicados
+    // Remove any old job schema to avoid duplicates
     const oldSchema = document.getElementById('job-posting-schema');
     if (oldSchema) {
         oldSchema.remove();
@@ -126,29 +138,29 @@ function injectJobPostingSchema(job) {
         "@context": "https://schema.org",
         "@type": "JobPosting",
         "title": job.title,
-        "description": job.description, // O ideal é que esta descrição seja HTML
-        "datePosted": new Date(job.date).toISOString().split('T')[0], // Formato YYYY-MM-DD
+        "description": job.description, // Ideally, this description should contain HTML for rich formatting
+        "datePosted": new Date(job.date).toISOString().split('T')[0], // YYYY-MM-DD format
         "hiringOrganization": {
             "@type": "Organization",
-            "name": job.company_name || "Empresa Confidencial",
-            "url": window.location.origin
+            "name": job.company_name || "Confidential Company",
+            "sameAs": window.location.origin // A link to the company's website if available
         },
         "jobLocation": {
             "@type": "Place",
             "address": {
                 "@type": "PostalAddress",
-                "addressCountry": "PT",
+                "addressCountry": "PT", // Assuming all jobs are in Portugal
                 "addressLocality": job.location
             }
         }
     };
 
-    // Adiciona campos opcionais apenas se existirem
+    // Add optional fields only if they exist to keep the schema clean
     if (job.validThrough) {
         schema.validThrough = new Date(job.validThrough).toISOString().split('T')[0];
     }
     if (job.employmentType) {
-        schema.employmentType = job.employmentType;
+        schema.employmentType = job.employmentType; // e.g., "FULL_TIME", "PART_TIME"
     }
     if (job.salary_min && job.salary_max) {
         schema.baseSalary = {
@@ -158,15 +170,15 @@ function injectJobPostingSchema(job) {
                 "@type": "QuantitativeValue",
                 "minValue": job.salary_min,
                 "maxValue": job.salary_max,
-                "unitText": "YEAR"
+                "unitText": "YEAR" // Or "MONTH", "HOUR"
             }
         };
     }
 
     const script = document.createElement('script');
     script.type = 'application/ld+json';
-    script.id = 'job-posting-schema'; // ID para poder remover se necessário
-    script.text = JSON.stringify(schema);
+    script.id = 'job-posting-schema'; // ID to easily find and remove it later
+    script.text = JSON.stringify(schema, null, 2); // Use indentation for readability in dev tools
 
     document.head.appendChild(script);
 }

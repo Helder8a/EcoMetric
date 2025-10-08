@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const getEl = id => document.getElementById(id);
 
-    // --- Elementos DOM Principais ---
+    // --- Main DOM Elements ---
     const evaluationForm = getEl("evaluationForm");
     const totalScoreEl = getEl("totalScore");
     const maxScoreEl = getEl("maxScore");
@@ -10,13 +10,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const progressBarEl = getEl("progressBar");
     const levelTextEl = getEl("levelText");
     const projectNameEl = getEl("projectName");
-    const memoriaGeneratorBtn = getEl("memoriaGeneratorBtn");
+    const reportGeneratorBtn = getEl("reportGeneratorBtn");
 
     let evaluationData = {};
     let currentCertification = "lidera";
     let lccaChartInstance = null;
 
-    // --- Funções de Avaliação Principal ---
+    // --- Main Evaluation Functions ---
 
     function initializeEvaluation() {
         evaluationData = {};
@@ -25,10 +25,10 @@ document.addEventListener("DOMContentLoaded", function () {
             updateScoreDisplay();
             return;
         }
-        for (let vertente in certData) {
-            evaluationData[vertente] = {};
-            for (let area in certData[vertente]) {
-                evaluationData[vertente][area] = 0;
+        for (let aspect in certData) {
+            evaluationData[aspect] = {};
+            for (let area in certData[aspect]) {
+                evaluationData[aspect][area] = 0;
             }
         }
         updateScoreDisplay();
@@ -72,22 +72,23 @@ document.addEventListener("DOMContentLoaded", function () {
         if (!certConfig) return 0;
         let totalScore = 0;
         if (certConfig.name === "LiderA" && certConfig.data) {
-            const weights = certConfig.weights.edificio;
+            // Using 'building' weights as default for now
+            const weights = certConfig.weights.building; 
             let weightedSum = 0;
             let totalWeight = 0;
-            for (const vertente in evaluationData) {
-                const weight = weights[vertente] || 1;
+            for (const aspect in evaluationData) {
+                const weight = weights[aspect] || 1;
                 totalWeight += weight;
-                let vertenteScore = 0;
-                let maxVertenteScore = 0;
-                for (const area in evaluationData[vertente]) {
-                    vertenteScore += evaluationData[vertente][area];
-                    if (certConfig.data[vertente] && certConfig.data[vertente][area] && certConfig.data[vertente][area].credits) {
-                        maxVertenteScore += Object.values(certConfig.data[vertente][area].credits).reduce((sum, val) => sum + val, 0);
+                let aspectScore = 0;
+                let maxAspectScore = 0;
+                for (const area in evaluationData[aspect]) {
+                    aspectScore += evaluationData[aspect][area];
+                    if (certConfig.data[aspect] && certConfig.data[aspect][area] && certConfig.data[aspect][area].credits) {
+                        maxAspectScore += Object.values(certConfig.data[aspect][area].credits).reduce((sum, val) => sum + val, 0);
                     }
                 }
-                if (maxVertenteScore > 0) {
-                    weightedSum += (vertenteScore / maxVertenteScore) * weight;
+                if (maxAspectScore > 0) {
+                    weightedSum += (aspectScore / maxAspectScore) * weight;
                 }
             }
             totalScore = totalWeight > 0 ? (weightedSum / totalWeight) * certConfig.maxScore : 0;
@@ -95,38 +96,39 @@ document.addEventListener("DOMContentLoaded", function () {
         return totalScore;
     }
 
-    // --- Geração Dinâmica do Formulário ---
+    // --- Dynamic Form Generation ---
 
     function renderForm() {
         const certConfig = certificationsDB[currentCertification];
         evaluationForm.innerHTML = "";
         if (!certConfig || !certConfig.data) {
-            evaluationForm.innerHTML = '<p class="text-muted">Este sistema de certificação ainda não tem critérios definidos na base de dados.</p>';
+            evaluationForm.innerHTML = '<p class="text-muted">This certification system does not have defined criteria in the database yet.</p>';
             initializeEvaluation();
             return;
         }
 
-        Object.entries(certConfig.data).forEach(([vertente, areas], index) => {
+        Object.entries(certConfig.data).forEach(([aspect, areas], index) => {
             let areaHTML = "";
             Object.entries(areas).forEach(([area, details]) => {
                 let creditsHTML = "";
                 if (details.credits) {
                     Object.keys(details.credits).forEach(creditName => {
-                        const creditId = `${currentCertification}-${vertente}-${area}-${creditName}`.replace(/[^a-zA-Z0-9]/g, "");
+                        // Sanitize IDs for valid query selectors
+                        const creditId = `${currentCertification}-${aspect}-${area}-${creditName}`.replace(/[^a-zA-Z0-9-_]/g, "");
                         creditsHTML += `
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="${creditId}" data-vertente="${vertente}" data-area="${area}" data-credit="${creditName}">
+                                <input type="checkbox" class="custom-control-input" id="${creditId}" data-aspect="${aspect}" data-area="${area}" data-credit="${creditName}">
                                 <label class="custom-control-label" for="${creditId}">${creditName}</label>
                             </div>`;
                     });
                 }
-                const solutionsIcon = details.solucoes_pt ? `<i class="fas fa-cubes solutions-icon" data-vertente="${vertente}" data-area="${area}" title="Ver Soluções de Mercado"></i>` : "";
+                const solutionsIcon = details.solutions_pt ? `<i class="fas fa-cubes solutions-icon" data-aspect="${aspect}" data-area="${area}" title="View Market Solutions"></i>` : "";
                 areaHTML += `
                     <div class="mb-4">
                         <h5>
                             <span class="area-label">${area}
                                 <span class="icon-group">
-                                    <i class="fas fa-info-circle info-icon" data-vertente="${vertente}" data-area="${area}"></i>
+                                    <i class="fas fa-info-circle info-icon" data-aspect="${aspect}" data-area="${area}" title="Criterion Information"></i>
                                     ${solutionsIcon}
                                 </span>
                             </span>
@@ -135,37 +137,37 @@ document.addEventListener("DOMContentLoaded", function () {
                     </div>`;
             });
 
-            const vertenteHTML = `
+            const aspectHTML = `
                 <div class="card mb-3">
-                    <div class="card-header vertente-header" data-toggle="collapse" data-target="#vertente-${index}">
-                        <h4 class="mb-0">${vertente}</h4>
+                    <div class="card-header aspect-header" id="header-${index}" data-toggle="collapse" data-target="#collapse-${index}">
+                        <h4 class="mb-0">${aspect}</h4>
                     </div>
-                    <div id="vertente-${index}" class="collapse ${index === 0 ? "show" : ""}" data-parent="#evaluationForm">
+                    <div id="collapse-${index}" class="collapse ${index === 0 ? "show" : ""}" aria-labelledby="header-${index}" data-parent="#evaluationForm">
                         <div class="card-body">
-                            ${areaHTML.replace(/<div class="mb-4">/g, '<hr class="my-4"><div class="mb-4">').replace('<hr class="my-4">', '')}
+                            ${areaHTML}
                         </div>
                     </div>
                 </div>`;
-            evaluationForm.insertAdjacentHTML("beforeend", vertenteHTML);
+            evaluationForm.insertAdjacentHTML("beforeend", aspectHTML);
         });
         initializeEvaluation();
     }
 
-    // --- Lógica dos Modais ---
+    // --- Modal Logic ---
 
-    function showInfoModal(vertente, area) {
-        const info = certificationsDB[currentCertification]?.data[vertente]?.[area]?.info;
+    function showInfoModal(aspect, area) {
+        const info = certificationsDB[currentCertification]?.data[aspect]?.[area]?.info;
         if (info) {
             const modalTitle = document.querySelector("#infoModal .modal-title");
-            if (modalTitle) modalTitle.textContent = `Critério: ${area}`;
+            if (modalTitle) modalTitle.textContent = `Criterion: ${area}`;
 
-            let normativaHTML = "";
+            let regulationsHTML = "";
             if (info.normativa_pt) {
-                normativaHTML = `
-                    <div class="normativa-section">
-                        <h6>Normativa Aplicável em Portugal</h6>
-                        <p><strong>${info.normativa_pt.nome}</strong><br>
-                           <a href="${info.normativa_pt.link}" target="_blank" rel="noopener noreferrer">Consultar Documento Oficial <i class="fas fa-external-link-alt fa-xs"></i></a>
+                regulationsHTML = `
+                    <div class="regulations-section">
+                        <h6>Applicable Regulations in Portugal</h6>
+                        <p><strong>${info.normativa_pt.name}</strong><br>
+                           <a href="${info.normativa_pt.link}" target="_blank" rel="noopener noreferrer">Consult Official Document <i class="fas fa-external-link-alt fa-xs"></i></a>
                         </p>
                     </div>`;
             }
@@ -173,35 +175,35 @@ document.addEventListener("DOMContentLoaded", function () {
             const modalBody = document.querySelector("#infoModal .modal-body");
             if (modalBody) {
                 modalBody.innerHTML = `
-                    <h6>Objetivo</h6><p>${info.objetivo}</p>
-                    <h6>Exemplo de Aplicação</h6><p>${info.exemplo}</p>
-                    <h6>Benefícios do Projeto</h6><p>${info.beneficios}</p>
-                    ${normativaHTML}`;
+                    <h6>Objective</h6><p>${info.objective}</p>
+                    <h6>Application Example</h6><p>${info.example}</p>
+                    <h6>Project Benefits</h6><p>${info.benefits}</p>
+                    ${regulationsHTML}`;
                 $("#infoModal").modal("show");
             }
         }
     }
 
-    function showSolutionsModal(vertente, area) {
-        const solutions = certificationsDB[currentCertification].data[vertente][area]?.solucoes_pt;
+    function showSolutionsModal(aspect, area) {
+        const solutions = certificationsDB[currentCertification].data[aspect][area]?.solutions_pt;
         if (!solutions) return;
 
         const modalTitle = document.querySelector("#solutionsModal .modal-title");
-        if (modalTitle) modalTitle.textContent = `Soluções de Mercado para: ${area}`;
+        if (modalTitle) modalTitle.textContent = `Market Solutions for: ${area}`;
 
         const modalBody = document.querySelector("#solutionsModal .modal-body");
         if (modalBody) {
             const solutionsHTML = solutions.map(sol => {
                 const lccaButton = (sol.lcca_id && typeof lccaDB !== 'undefined' && lccaDB[sol.lcca_id])
-                    ? `<button class="btn btn-success btn-sm mt-2 launch-lcca-btn" data-lcca-id="${sol.lcca_id}">Analisar Custo de Ciclo de Vida</button>`
+                    ? `<button class="btn btn-success btn-sm mt-2 launch-lcca-btn" data-lcca-id="${sol.lcca_id}">Analyze Life Cycle Cost</button>`
                     : "";
                 return `
                     <div class="solution-card">
-                        <h5>${sol.nome}</h5>
-                        <p class="solution-manufacturer"><strong>Fabricante/Marca:</strong> ${sol.fabricante}</p>
-                        <p><strong>Descrição:</strong> ${sol.descricao}</p>
-                        <p><strong>Aplicação Típica:</strong> ${sol.aplicacao}</p>
-                        <a href="${sol.link}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm">Visitar Website <i class="fas fa-external-link-alt"></i></a>
+                        <h5>${sol.name}</h5>
+                        <p class="solution-manufacturer"><strong>Manufacturer/Brand:</strong> ${sol.manufacturer}</p>
+                        <p><strong>Description:</strong> ${sol.description}</p>
+                        <p><strong>Typical Application:</strong> ${sol.application}</p>
+                        <a href="${sol.link}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm">Visit Website <i class="fas fa-external-link-alt"></i></a>
                         ${lccaButton}
                     </div>`;
             }).join("");
@@ -210,75 +212,79 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    memoriaGeneratorBtn.addEventListener("click", () => {
-        const projectName = projectNameEl.value.trim() || "este projeto";
-        let memoriaText = `MEMÓRIA DESCRITIVA DE SUSTENTABILIDADE\n`;
-        memoriaText += `PROJETO: ${projectName.toUpperCase()}\n\n`;
-        memoriaText += `A presente memória descreve as estratégias de sustentabilidade adotadas para ${projectName}, com base nos critérios do sistema de avaliação LiderA.\n\n`;
+    if(reportGeneratorBtn) {
+        reportGeneratorBtn.addEventListener("click", () => {
+            const projectName = projectNameEl.value.trim() || "this project";
+            let reportText = `SUSTAINABILITY DESCRIPTIVE REPORT\n`;
+            reportText += `PROJECT: ${projectName.toUpperCase()}\n\n`;
+            reportText += `This report describes the sustainability strategies adopted for ${projectName}, based on the criteria of the LiderA evaluation system.\n\n`;
 
-        const checkedBoxes = document.querySelectorAll('#evaluationForm input[type="checkbox"]:checked');
+            const checkedBoxes = document.querySelectorAll('#evaluationForm input[type="checkbox"]:checked');
 
-        if (checkedBoxes.length === 0) {
-            memoriaText += "Nenhum critério de sustentabilidade foi selecionado na avaliação.";
-        } else {
-            const processedVertentes = new Set();
-            const processedAreas = new Set();
-            checkedBoxes.forEach(checkbox => {
-                const { vertente, area } = checkbox.dataset;
-                if (!processedVertentes.has(vertente)) {
-                    memoriaText += `\n--- ${vertente.toUpperCase()} ---\n\n`;
-                    processedVertentes.add(vertente);
-                }
-                if (!processedAreas.has(area)) {
-                    const info = certificationsDB[currentCertification]?.data[vertente]?.[area]?.info;
-                    if (info && info.memoria_descritiva) {
-                        memoriaText += `>> CRITÉRIO: ${area.toUpperCase()}\n`;
-                        memoriaText += `${info.memoria_descritiva}\n\n`;
-                        processedAreas.add(area);
+            if (checkedBoxes.length === 0) {
+                reportText += "No sustainability criteria were selected in the evaluation.";
+            } else {
+                const processedAspects = new Set();
+                const processedAreas = new Set();
+                checkedBoxes.forEach(checkbox => {
+                    const { aspect, area } = checkbox.dataset;
+                    if (!processedAspects.has(aspect)) {
+                        reportText += `\n--- ${aspect.toUpperCase()} ---\n\n`;
+                        processedAspects.add(aspect);
                     }
-                }
-            });
-        }
+                    if (!processedAreas.has(area)) {
+                        const info = certificationsDB[currentCertification]?.data[aspect]?.[area]?.info;
+                        if (info && info.descriptive_report) {
+                            reportText += `>> CRITERION: ${area.toUpperCase()}\n`;
+                            reportText += `${info.descriptive_report}\n\n`;
+                            processedAreas.add(area);
+                        }
+                    }
+                });
+            }
 
-        getEl("memoria-output").value = memoriaText;
-        $("#memoriaModal").modal("show");
-    });
+            getEl("report-output").value = reportText;
+            $("#reportModal").modal("show");
+        });
+    }
 
-    getEl("copyMemoriaBtn").addEventListener("click", () => {
-        const memoriaOutput = getEl("memoria-output");
-        memoriaOutput.select();
-        memoriaOutput.setSelectionRange(0, 99999);
-        document.execCommand("copy");
-        alert("Texto copiado para a área de transferência!");
-    });
+    const copyReportBtn = getEl("copyReportBtn");
+    if(copyReportBtn) {
+        copyReportBtn.addEventListener("click", () => {
+            const reportOutput = getEl("report-output");
+            reportOutput.select();
+            reportOutput.setSelectionRange(0, 99999); // For mobile devices
+            try {
+                document.execCommand("copy");
+                alert("Text copied to clipboard!");
+            } catch (err) {
+                console.error("Failed to copy text: ", err);
+            }
+        });
+    }
 
-
-    // --- Lógica da Calculadora LCCA (NOVO E CORRIGIDO) ---
-
+    // --- LCCA Calculator Logic ---
     function calculateLCCA(material, quantity, discountRate) {
         const rate = discountRate / 100;
-        const years = material.vida_util;
+        const years = material.useful_life;
         let maintenanceCosts = 0;
         let replacementCosts = 0;
         let energySavings = 0;
 
         for (let i = 1; i <= years; i++) {
-            // Manutenção
-            maintenanceCosts += (material.custo_manutencao_anual * quantity) / Math.pow(1 + rate, i);
-            // Substituição (assume-se no final da vida útil)
-            if (i === years) {
-                replacementCosts += (material.custo_inicial * material.custo_substituicao * quantity) / Math.pow(1 + rate, i);
+            maintenanceCosts += (material.annual_maintenance_cost * quantity) / Math.pow(1 + rate, i);
+            if (i % material.useful_life === 0 && i < years) { // Simplified replacement logic
+                 replacementCosts += (material.initial_cost * material.replacement_cost_factor * quantity) / Math.pow(1 + rate, i);
             }
-            // Poupança
-            energySavings += (material.poupanca_energetica_anual * quantity) / Math.pow(1 + rate, i);
+            energySavings += (material.annual_energy_saving * quantity) / Math.pow(1 + rate, i);
         }
 
-        const initialCost = material.custo_inicial * quantity;
+        const initialCost = material.initial_cost * quantity;
         const totalCost = initialCost + maintenanceCosts + replacementCosts - energySavings;
 
         return { initialCost, maintenanceCosts, replacementCosts, energySavings, totalCost };
     }
-
+    
     function updateLccaDisplay(material, quantity, discountRate) {
         const results = calculateLCCA(material, quantity, discountRate);
         const formatCurrency = val => `€ ${val.toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -296,9 +302,14 @@ document.addEventListener("DOMContentLoaded", function () {
         lccaChartInstance = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Custo Inicial', 'Manutenção', 'Substituição', 'Poupança'],
+                labels: ['Initial Cost', 'Maintenance', 'Replacement', 'Savings'],
                 datasets: [{
-                    data: [results.initialCost, results.maintenanceCosts, results.replacementCosts, -results.energySavings],
+                    data: [
+                        Math.max(0, results.initialCost), 
+                        Math.max(0, results.maintenanceCosts), 
+                        Math.max(0, results.replacementCosts), 
+                        Math.max(0, -results.energySavings)
+                    ],
                     backgroundColor: ['#0a3d62', '#ffc107', '#dc3545', '#28a745'],
                 }]
             },
@@ -306,7 +317,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 responsive: true,
                 plugins: {
                     legend: { position: 'top' },
-                    title: { display: true, text: `Distribuição de Custos para ${quantity} ${material.unidade}` }
+                    title: { display: true, text: `Cost Distribution for ${quantity} ${material.unit}` }
                 }
             }
         });
@@ -315,33 +326,33 @@ document.addEventListener("DOMContentLoaded", function () {
     function launchLccaCalculator(lccaId) {
         const material = lccaDB[lccaId];
         if (!material) {
-            alert("Erro: Dados do material não encontrados.");
+            alert("Error: Material data not found.");
             return;
         }
 
-        getEl('lccaMaterialName').textContent = material.nome;
-        getEl('lccaUnit').textContent = material.unidade;
+        getEl('lccaMaterialName').textContent = material.name;
+        getEl('lccaUnit').textContent = material.unit;
 
         const quantityInput = getEl('lccaQuantity');
         const discountRateInput = getEl('lccaDiscountRate');
-
-        // Remove event listeners antigos para evitar duplicação
-        const newQuantityInput = quantityInput.cloneNode(true);
-        quantityInput.parentNode.replaceChild(newQuantityInput, quantityInput);
-
-        const newDiscountRateInput = discountRateInput.cloneNode(true);
-        discountRateInput.parentNode.replaceChild(newDiscountRateInput, discountRateInput);
-
+        
+        // Use a wrapper function for the event listener to avoid re-adding it
         const updateHandler = () => {
-            const quantity = parseFloat(newQuantityInput.value) || 1;
-            const discountRate = parseFloat(newDiscountRateInput.value) || 0;
+            const quantity = parseFloat(quantityInput.value) || 1;
+            const discountRate = parseFloat(discountRateInput.value) || 0;
             updateLccaDisplay(material, quantity, discountRate);
         };
+        
+        // Remove old listeners before adding new ones
+        quantityInput.removeEventListener('input', window.lccaUpdateHandler);
+        discountRateInput.removeEventListener('input', window.lccaUpdateHandler);
 
-        newQuantityInput.addEventListener('input', updateHandler);
-        newDiscountRateInput.addEventListener('input', updateHandler);
+        window.lccaUpdateHandler = updateHandler; // Store handler globally to remove it later
+        
+        quantityInput.addEventListener('input', window.lccaUpdateHandler);
+        discountRateInput.addEventListener('input', window.lccaUpdateHandler);
 
-        updateHandler(); // Chamar uma vez para o cálculo inicial
+        updateHandler(); // Initial calculation
         $("#lccaModal").modal("show");
     }
 
@@ -349,10 +360,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     evaluationForm.addEventListener("change", e => {
         if (e.target.matches('input[type="checkbox"]')) {
-            const { vertente, area, credit } = e.target.dataset;
+            const { aspect, area, credit } = e.target.dataset;
             const certConfig = certificationsDB[currentCertification];
-            const creditValue = certConfig.data[vertente][area].credits[credit];
-            evaluationData[vertente][area] += e.target.checked ? creditValue : -creditValue;
+            const creditValue = certConfig.data[aspect][area].credits[credit];
+            evaluationData[aspect][area] += e.target.checked ? creditValue : -creditValue;
             updateScoreDisplay();
         }
     });
@@ -360,24 +371,28 @@ document.addEventListener("DOMContentLoaded", function () {
     evaluationForm.addEventListener("click", e => {
         const infoIcon = e.target.closest(".info-icon");
         if (infoIcon) {
-            const { vertente, area } = infoIcon.dataset;
-            showInfoModal(vertente, area);
+            const { aspect, area } = infoIcon.dataset;
+            showInfoModal(aspect, area);
         }
         const solutionsIcon = e.target.closest(".solutions-icon");
         if (solutionsIcon) {
-            const { vertente, area } = solutionsIcon.dataset;
-            showSolutionsModal(vertente, area);
+            const { aspect, area } = solutionsIcon.dataset;
+            showSolutionsModal(aspect, area);
         }
     });
 
-    // Event Delegation para o botão da calculadora LCCA
-    document.querySelector("#solutionsModal .modal-body").addEventListener('click', function (e) {
-        if (e.target && e.target.classList.contains('launch-lcca-btn')) {
-            const lccaId = e.target.dataset.lccaId;
-            launchLccaCalculator(lccaId);
-        }
-    });
+    // Event Delegation for the LCCA calculator button
+    const solutionsModalBody = document.querySelector("#solutionsModal .modal-body");
+    if(solutionsModalBody){
+        solutionsModalBody.addEventListener('click', function (e) {
+            const lccaBtn = e.target.closest('.launch-lcca-btn');
+            if (lccaBtn) {
+                const lccaId = lccaBtn.dataset.lccaId;
+                launchLccaCalculator(lccaId);
+            }
+        });
+    }
 
-    // --- Inicialização ---
+    // --- Initialization ---
     renderForm();
 });

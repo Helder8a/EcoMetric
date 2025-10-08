@@ -1,1 +1,100 @@
-const certificationsDB = { lidera: { name: "LiderA", maxScore: 20, scoreUnit: "Pontos", levels: { 11: "A++", 9.5: "A+", 8: "A", 6.5: "B", 5: "C", 3.5: "D", 2: "E", 1: "F", 0: "G" }, weights: { edificio: { "Integra\xe7\xe3o Local": 1, Recursos: 1.5, "Cargas Ambientais": 1, "Qualidade do Ambiente Interior": 1.2, "Viv\xeancias Socioecon\xf3micas": 1 }, urbano: { "Integra\xe7\xe3o Local": 1.5, Recursos: 1, "Cargas Ambientais": 1.2, "Qualidade do Ambiente Interior": .8, "Viv\xeancias Socioecon\xf3micas": 1.5 } }, data: { "Integra\xe7\xe3o Local": { "Bio-clima": { info: { objetivo: "Otimiza\xe7\xe3o do projeto face \xe0s condi\xe7\xf5es clim\xe1ticas locais.", exemplo: "Edif\xedcio em Lisboa com fachadas de vidro a sul protegidas por palas.", beneficios: "Redu\xe7\xe3o da necessidade de ar condicionado.", normativa_pt: { nome: "REH - Regulamento de Desempenho Energ\xe9tico dos Edif\xedcios de Habita\xe7\xe3o (Decreto-Lei n.\xba 101-D/2020)", link: "https://dre.pt/dre/detalhe/decreto-lei/101-d-2020-150799381" }, memoria_descritiva: "A conce\xe7\xe3o do edif\xedcio teve em considera\xe7\xe3o as caracter\xedsticas bioclim\xe1ticas do local. A orienta\xe7\xe3o solar foi otimizada para maximizar os ganhos solares no inverno e minimiz\xe1-los no ver\xe3o, e foram implementadas prote\xe7\xf5es contra os ventos dominantes, contribuindo para o conforto t\xe9rmico e a redu\xe7\xe3o do consumo energ\xe9tico." }, credits: { "Orienta\xe7\xe3o solar otimizada": .4, "Prote\xe7\xe3o contra ventos dominantes": .2, "Estudo de sombras adequado": .2 } } }, Recursos: { "Aislamiento Sostenible": { info: { objetivo: "Utilizar materiales de aislamiento con bajo impacto ambiental y alta eficiencia.", exemplo: "Isolamento de paredes com aglomerado de corti\xe7a expandida.", beneficios: "Melhoria do conforto t\xe9rmico e ac\xfastico, e redu\xe7\xe3o da fatura energ\xe9tica.", normativa_pt: { nome: "REH - Anexo III (Desempenho t\xe9rmico de componentes da envolvente)", link: "https://dre.pt/dre/detalhe/decreto-lei/101-d-2020-150799381" }, memoria_descritiva: "Para o isolamento da envolvente do edif\xedcio, foram selecionados materiais de elevado desempenho e baixo impacto ambiental. Esta escolha visa garantir um excelente conforto t\xe9rmico e ac\xfastico, cumprindo com os requisitos do REH e reduzindo significativamente a necessidade de climatiza\xe7\xe3o artificial." }, solucoes_pt: [{ nome: "Aglomerado de Corti\xe7a Expandida (ICB)", fabricante: "Amorim Isolamentos, Sofalca", descricao: "Material 100% natural e portugu\xeas. Excelente isolante t\xe9rmico e ac\xfastico, totalmente recicl\xe1vel e com balan\xe7o de carbono negativo.", aplicacao: "Isolamento de paredes (ETICS), coberturas e lajes.", link: "https://www.amorimisolamentos.com/", lcca_id: "amorim_icb", kgCO2e: -1.5 }, { nome: "L\xe3 Mineral (L\xe3 de Rocha)", fabricante: "Volcalis, Saint-Gobain (Isover), Knauf Insulation", descricao: "Isolantes fabricados a partir de mat\xe9rias-primas naturais (rocha bas\xe1ltica ou areia) e recicladas. \xd3timo desempenho t\xe9rmico, ac\xfastico e de prote\xe7\xe3o contra inc\xeandios.", aplicacao: "Paredes duplas, divis\xf3rias, tetos falsos e coberturas.", link: "https://www.volcalis.pt/", lcca_id: "volcalis_l\xe3", kgCO2e: 1.2 }, { nome: "Bet\xe3o de C\xe2nhamo (Hempcrete)", fabricante: "Natura Materia, C\xe2nhamor", descricao: "Mistura de c\xe2nhamo, cal e \xe1gua. Material leve, com bom isolamento t\xe9rmico e ac\xfastico. Regula a humidade interior.", aplicacao: "Paredes de enchimento n\xe3o estruturais, isolamento de coberturas.", link: "https://naturamateria.pt/", lcca_id: "hempcrete", kgCO2e: -.7 }, { nome: "Pain\xe9is de Palha", fabricante: "Pinho&Palha", descricao: "Pain\xe9is pr\xe9-fabricados de palha de trigo compactada. \xc9 um subproduto agr\xedcola, renov\xe1vel e biodegrad\xe1vel com excelentes propriedades de isolamento.", aplicacao: "Constru\xe7\xe3o de paredes exteriores e interiores em sistemas modulares.", link: "https://www.pinhopalha.com/", lcca_id: "painel_palha", kgCO2e: -1 }], credits: { "Isolamento t\xe9rmico de corti\xe7a": .6, "Isolamento com l\xe3 mineral (conte\xfado reciclado)": .4, "Isolamento com pain\xe9is de palha ou fibra de madeira": .5, "Uso de Bet\xe3o de C\xe2nhamo": .5 } }, "Paneles y Estructura": { info: { objetivo: "Empregar sistemas estruturais e de veda\xe7\xf5es com materiais renov\xe1veis ou reciclados.", exemplo: "Estrutura de um edif\xedcio em madeira lamelada colada (CLT).", beneficios: "Redu\xe7\xe3o do tempo de constru\xe7\xe3o, menor peso da estrutura e sequestro de carbono.", normativa_pt: { nome: "Euroc\xf3digos Estruturais (ex: Euroc\xf3digo 5 para madeira)", link: "http://www.lnec.pt/pt/atividades/normalizacao/eurocodigos-estruturais/" }, memoria_descritiva: "A estrutura do projeto foi concebida com recurso a materiais de baixo carbono incorporado, como a madeira certificada (FSC/PEFC) em sistemas de CLT, ou alvenarias em bloco de terra comprimida (BTC). Estas solu\xe7\xf5es, al\xe9m de sustent\xe1veis, cumprem com os Euroc\xf3digos Estruturais aplic\xe1veis e contribuem para a redu\xe7\xe3o da pegada de carbono global da constru\xe7\xe3o." }, solucoes_pt: [{ nome: "Madeira Lamelada Colada (CLT)", fabricante: "Grupo Casais, Green Heritage, Tisem", descricao: "Pain\xe9is e vigas estruturais de madeira maci\xe7a. Permitem constru\xe7\xf5es r\xe1pidas, a seco e com uma pegada de carbono muito reduzida.", aplicacao: "Estruturas de edif\xedcios (pilares, vigas, paredes, lajes, coberturas).", link: "https://edificiossustentaveis.casais.pt/", lcca_id: "madeira_clt", kgCO2e: -1.8 }, { nome: "Tijolo Ecol\xf3gico (BTC)", fabricante: "Terrapalha, v\xe1rios produtores artesanais", descricao: "Produzido a partir de terra local, prensado e curado ao ar, sem necessidade de cozedura. Possui excelente in\xe9rcia t\xe9rmica.", aplicacao: "Paredes de alvenaria, muros.", link: "https://terrapalha.com/", lcca_id: "tijolo_btc", kgCO2e: .1 }, { nome: "Bet\xe3o com Agregados Reciclados", fabricante: "Secil, Cimpor, Bet\xe3o Liz", descricao: "Bet\xe3o que substitui parte dos agregados naturais (areia, brita) por materiais provenientes de res\xedduos de constru\xe7\xe3o e demoli\xe7\xe3o (RCD), promovendo a economia circular.", aplicacao: "Funda\xe7\xf5es, lajes, elementos n\xe3o estruturais.", link: "https://www.secil-group.com/pt/", kgCO2e: .12 }], credits: { "Utiliza\xe7\xe3o de Madeira Certificada (FSC/PEFC)": .6, "Estrutura em CLT ou madeira lamelada": .7, "Alvenaria com Tijolo Ecol\xf3gico (BTC)": .4, "Uso de Bet\xe3o com agregados reciclados": .3 } } }, "Cargas Ambientais": { "Gest\xe3o de Res\xedduos": { info: { objetivo: "Minimiza\xe7\xe3o da produ\xe7\xe3o de res\xedduos.", exemplo: "Plano de obra que desvie >70% dos res\xedduos para reciclagem.", beneficios: "Redu\xe7\xe3o do lixo.", normativa_pt: { nome: "RGGR - Regime Geral da Gest\xe3o de Res\xedduos (Decreto-Lei n.\xba 102-D/2020)", link: "https://dre.pt/dre/detalhe/decreto-lei/102-d-2020-151049581" }, memoria_descritiva: "Foi implementado um plano rigoroso de gest\xe3o de res\xedduos em obra, em conformidade com o RGGR, com o objetivo de desviar mais de 70% dos res\xedduos para reciclagem e reutiliza\xe7\xe3o. Adicionalmente, o projeto contempla espa\xe7os dedicados \xe0 separa\xe7\xe3o de res\xedduos dom\xe9sticos para os futuros utilizadores, promovendo a sustentabilidade na fase de opera\xe7\xe3o." }, credits: { "Plano de gest\xe3o de res\xedduos de constru\xe7\xe3o (>70% desviado)": .6, "Espa\xe7o para separa\xe7\xe3o de res\xedduos dom\xe9sticos": .4 } } }, "Qualidade do Ambiente Interior": { "Sa\xfade e Qualidade do Ar": { info: { objetivo: "Garantir um ambiente interior saud\xe1vel e confort\xe1vel, livre de emiss\xf5es t\xf3xicas.", exemplo: "Projetar ventila\xe7\xe3o natural e usar tintas sem COV.", beneficios: "Ambiente mais saud\xe1vel e produtivo.", normativa_pt: { nome: "RECS - Regulamento de Edif\xedcios de Com\xe9rcio e Servi\xe7os (parte do REH)", link: "https://dre.pt/dre/detalhe/decreto-lei/101-d-2020-150799381" }, memoria_descritiva: "A qualidade do ambiente interior foi uma prioridade, garantida atrav\xe9s de um projeto de ventila\xe7\xe3o natural cruzada e da especifica\xe7\xe3o de materiais com baixas ou nulas emiss\xf5es de Compostos Org\xe2nicos Vol\xe1teis (COV), como tintas e vernizes ecol\xf3gicos. Estas medidas visam assegurar um ambiente saud\xe1vel para os ocupantes, em linha com as melhores pr\xe1ticas e a normativa aplic\xe1vel." }, solucoes_pt: [{ nome: "Tintas e Vernizes Ecol\xf3gicos", fabricante: "CIN (gama CINatura), Robbialac (gama Ecolabel), Biofa", descricao: "Tintas e vernizes \xe0 base de \xe1gua ou \xf3leos naturais, com emiss\xf5es de Compostos Org\xe2nicos Vol\xe1teis (COV) muito reduzidas ou nulas e certificadas com o R\xf3tulo Ecol\xf3gico Europeu (Ecolabel).", aplicacao: "Pintura de paredes, tetos, madeiras e metais.", link: "https://www.cin.com/", kgCO2e: 1.5 }], credits: { "Ventila\xe7\xe3o natural cruzada eficiente": .5, "Materiais com baixas emiss\xf5es de COV (tintas, colas)": .4, "Placas de gesso com purifica\xe7\xe3o de ar": .3 } } } } }, breeam: { name: "BREEAM", maxScore: 100, scoreUnit: "Pontos", levels: { 85: "Outstanding", 70: "Excellent", 55: "Very Good", 45: "Good", 30: "Pass", 0: "Unclassified" }, data: {} }, leed: { name: "LEED", maxScore: 110, scoreUnit: "Pontos", levels: { 80: "Platinum", 60: "Gold", 50: "Silver", 40: "Certified", 0: "Uncertified" }, data: {} } };
+const certificationsDB = {
+    lidera: {
+        name: "LiderA",
+        maxScore: 20,
+        scoreUnit: "Points",
+        levels: { 11: "A++", 9.5: "A+", 8: "A", 6.5: "B", 5: "C", 3.5: "D", 2: "E", 1: "F", 0: "G" },
+        weights: {
+            building: { "Local Integration": 1, Resources: 1.5, "Environmental Loads": 1, "Indoor Environmental Quality": 1.2, "Socioeconomic Experiences": 1 },
+            urban: { "Local Integration": 1.5, Resources: 1, "Environmental Loads": 1.2, "Indoor Environmental Quality": .8, "Socioeconomic Experiences": 1.5 }
+        },
+        data: {
+            "Local Integration": {
+                "Bio-climate": {
+                    info: {
+                        objective: "Optimization of the project design according to local climatic conditions.",
+                        example: "Building in Lisbon with south-facing glass facades protected by overhangs.",
+                        benefits: "Reduction in air conditioning needs.",
+                        normativa_pt: { name: "REH - Energy Performance Regulation for Residential Buildings (Decree-Law No. 101-D/2020)", link: "https://dre.pt/dre/detalhe/decreto-lei/101-d-2020-150799381" },
+                        descriptive_report: "The building's design considered the site's bioclimatic characteristics. Solar orientation was optimized to maximize solar gains in winter and minimize them in summer, and protections against dominant winds were implemented, contributing to thermal comfort and reduced energy consumption."
+                    },
+                    credits: { "Optimized solar orientation": .4, "Protection against dominant winds": .2, "Adequate shadow study": .2 }
+                }
+            },
+            Resources: {
+                "Sustainable Insulation": {
+                    info: {
+                        objective: "Use insulation materials with low environmental impact and high efficiency.",
+                        example: "Wall insulation with expanded cork agglomerate.",
+                        benefits: "Improved thermal and acoustic comfort, and reduced energy bills.",
+                        normativa_pt: { name: "REH - Annex III (Thermal performance of envelope components)", link: "https://dre.pt/dre/detalhe/decreto-lei/101-d-2020-150799381" },
+                        descriptive_report: "High-performance, low-impact materials were selected for the building's envelope insulation. This choice aims to ensure excellent thermal and acoustic comfort, complying with REH requirements and significantly reducing the need for artificial climate control."
+                    },
+                    solutions_pt: [
+                        { name: "Expanded Cork Agglomerate (ICB)", manufacturer: "Amorim Isolamentos, Sofalca", description: "100% natural and Portuguese material. Excellent thermal and acoustic insulator, fully recyclable, and with a negative carbon balance.", application: "Wall insulation (ETICS), roofs, and floors.", link: "https://www.amorimisolamentos.com/", lcca_id: "amorim_icb", kgCO2e: -1.5 },
+                        { name: "Mineral Wool (Rock Wool)", manufacturer: "Volcalis, Saint-Gobain (Isover), Knauf Insulation", description: "Insulators made from natural (basalt rock or sand) and recycled raw materials. Great thermal, acoustic, and fire protection performance.", application: "Cavity walls, partitions, false ceilings, and roofs.", link: "https://www.volcalis.pt/", lcca_id: "volcalis_wool", kgCO2e: 1.2 },
+                        { name: "Hempcrete", manufacturer: "Natura Materia, Cânhamor", description: "Mix of hemp, lime, and water. Lightweight material with good thermal and acoustic insulation. Regulates indoor humidity.", application: "Non-structural infill walls, roof insulation.", link: "https://naturamateria.pt/", lcca_id: "hempcrete", kgCO2e: -.7 },
+                        { name: "Straw Panels", manufacturer: "Pinho&Palha", description: "Prefabricated panels of compacted wheat straw. It is an agricultural byproduct, renewable and biodegradable with excellent insulation properties.", application: "Construction of exterior and interior walls in modular systems.", link: "https://www.pinhopalha.com/", lcca_id: "straw_panel", kgCO2e: -1 }
+                    ],
+                    credits: { "Cork thermal insulation": .6, "Mineral wool insulation (recycled content)": .4, "Insulation with straw or wood fiber panels": .5, "Use of Hempcrete": .5 }
+                },
+                "Panels and Structure": {
+                    info: {
+                        objective: "Employ structural and enclosure systems with renewable or recycled materials.",
+                        example: "Building structure in Cross-Laminated Timber (CLT).",
+                        benefits: "Reduced construction time, lighter structure, and carbon sequestration.",
+                        normativa_pt: { name: "Structural Eurocodes (e.g., Eurocode 5 for timber)", link: "http://www.lnec.pt/pt/atividades/normalizacao/eurocodigos-estruturais/" },
+                        descriptive_report: "The project's structure was designed using low embodied carbon materials, such as certified wood (FSC/PEFC) in CLT systems, or compressed earth blocks (CEB). These solutions, besides being sustainable, comply with the applicable Structural Eurocodes and contribute to reducing the overall carbon footprint of the construction."
+                    },
+                    solutions_pt: [
+                        { name: "Cross-Laminated Timber (CLT)", manufacturer: "Grupo Casais, Green Heritage, Tisem", description: "Structural panels and beams of solid wood. Allow for fast, dry construction with a very low carbon footprint.", application: "Building structures (columns, beams, walls, floors, roofs).", link: "https://edificiossustentaveis.casais.pt/", lcca_id: "clt_timber", kgCO2e: -1.8 },
+                        { name: "Compressed Earth Block (CEB)", manufacturer: "Terrapalha, various artisanal producers", description: "Produced from local earth, pressed and air-cured, without firing. Has excellent thermal inertia.", application: "Masonry walls, fences.", link: "https://terrapalha.com/", lcca_id: "ceb_brick", kgCO2e: .1 },
+                        { name: "Concrete with Recycled Aggregates", manufacturer: "Secil, Cimpor, Betão Liz", description: "Concrete that replaces part of the natural aggregates (sand, gravel) with materials from construction and demolition waste (CDW), promoting a circular economy.", application: "Foundations, slabs, non-structural elements.", link: "https://www.secil-group.com/pt/", kgCO2e: .12 }
+                    ],
+                    credits: { "Use of Certified Wood (FSC/PEFC)": .6, "CLT or glulam structure": .7, "Masonry with Compressed Earth Blocks (CEB)": .4, "Use of concrete with recycled aggregates": .3 }
+                }
+            },
+            "Environmental Loads": {
+                "Waste Management": {
+                    info: {
+                        objective: "Minimization of waste production.",
+                        example: "Construction plan that diverts >70% of waste for recycling.",
+                        benefits: "Reduction of landfill waste.",
+                        normativa_pt: { name: "RGGR - General Waste Management Regime (Decree-Law No. 102-D/2020)", link: "https://dre.pt/dre/detalhe/decreto-lei/102-d-2020-151049581" },
+                        descriptive_report: "A rigorous on-site waste management plan was implemented, in accordance with the RGGR, aiming to divert over 70% of waste to recycling and reuse. Additionally, the project includes dedicated spaces for domestic waste separation for future users, promoting sustainability in the operational phase."
+                    },
+                    credits: { "Construction waste management plan (>70% diverted)": .6, "Space for domestic waste separation": .4 }
+                }
+            },
+            "Indoor Environmental Quality": {
+                "Health and Air Quality": {
+                    info: {
+                        objective: "Ensure a healthy and comfortable indoor environment, free of toxic emissions.",
+                        example: "Design for natural ventilation and use paints without VOCs.",
+                        benefits: "Healthier and more productive environment.",
+                        normativa_pt: { name: "RECS - Regulation for Commercial and Service Buildings (part of REH)", link: "https://dre.pt/dre/detalhe/decreto-lei/101-d-2020-150799381" },
+                        descriptive_report: "Indoor environmental quality was a priority, ensured through a design for cross-ventilation and the specification of materials with low or zero Volatile Organic Compound (VOC) emissions, such as ecological paints and varnishes. These measures aim to ensure a healthy environment for occupants, in line with best practices and applicable regulations."
+                    },
+                    solutions_pt: [
+                        { name: "Ecological Paints and Varnishes", manufacturer: "CIN (CINatura range), Robbialac (Ecolabel range), Biofa", description: "Water-based or natural oil-based paints and varnishes, with very low or zero VOC emissions and certified with the European Ecolabel.", application: "Painting of walls, ceilings, wood, and metals.", link: "https://www.cin.com/", kgCO2e: 1.5 }
+                    ],
+                    credits: { "Efficient natural cross-ventilation": .5, "Low VOC emission materials (paints, glues)": .4, "Gypsum boards with air purification": .3 }
+                }
+            }
+        }
+    },
+    breeam: {
+        name: "BREEAM",
+        maxScore: 100,
+        scoreUnit: "Points",
+        levels: { 85: "Outstanding", 70: "Excellent", 55: "Very Good", 45: "Good", 30: "Pass", 0: "Unclassified" },
+        data: {}
+    },
+    leed: {
+        name: "LEED",
+        maxScore: 110,
+        scoreUnit: "Points",
+        levels: { 80: "Platinum", 60: "Gold", 50: "Silver", 40: "Certified", 0: "Uncertified" },
+        data: {}
+    }
+};
