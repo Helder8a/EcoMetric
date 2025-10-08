@@ -3,22 +3,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const inputDefinitions = [
         {
             sectionTitle: 'Land Data',
-            fields: [{ id: 'landArea', label: 'Total Land Area (m²)', placeholder: 'e.g., 10000' }]
+            fields: [
+                { id: 'landArea', label: 'Total Land Area (m²)', placeholder: 'e.g., 10000', description: 'The total surface area of the property lot.' }
+            ]
         },
         {
             sectionTitle: 'Urban Planning Regulations',
             fields: [
-                { id: 'floorAreaRatio', label: 'Floor Area Ratio (m²/m²)', placeholder: 'e.g., 2.5' },
-                { id: 'maxLotCoverage', label: 'Max Lot Coverage (%)', placeholder: 'e.g., 60' },
-                { id: 'maxBuildingHeight', label: 'Max Height (Number of floors)', placeholder: 'e.g., 5' }
+                { id: 'floorAreaRatio', label: 'Floor Area Ratio (m²/m²)', placeholder: 'e.g., 2.5', description: 'The ratio of a building\'s total floor area to the size of the piece of land upon which it is built. It determines the maximum buildable area.' },
+                { id: 'maxLotCoverage', label: 'Max Lot Coverage (%)', placeholder: 'e.g., 60', description: 'The maximum percentage of the land that can be covered by the building\'s footprint.' },
+                { id: 'maxBuildingHeight', label: 'Max Height (Number of floors)', placeholder: 'e.g., 5', description: 'The maximum number of floors allowed by local regulations.' }
             ]
         },
         {
             sectionTitle: 'Financial Data',
             fields: [
-                { id: 'buildCost', label: 'Construction Cost ($/m²)', placeholder: 'e.g., 950' },
-                { id: 'landCost', label: 'Total Land Cost ($)', placeholder: 'e.g., 500000' },
-                { id: 'sellPrice', label: 'Estimated Sale Price ($/m²)', placeholder: 'e.g., 2100' }
+                { id: 'buildCost', label: 'Construction Cost ($/m²)', placeholder: 'e.g., 950', description: 'The estimated cost to build one square meter of the property.' },
+                { id: 'landCost', label: 'Total Land Cost ($)', placeholder: 'e.g., 500000', description: 'The total acquisition price of the land.' },
+                { id: 'sellPrice', label: 'Estimated Sale Price ($/m²)', placeholder: 'e.g., 2100', description: 'The projected price at which one square meter of the constructed property will be sold.' }
             ]
         }
     ];
@@ -32,7 +34,8 @@ document.addEventListener('DOMContentLoaded', () => {
             section.fields.forEach(field => {
                 html += `<div class="form-group">
                            <label for="${field.id}">${field.label}</label>
-                           <input type="number" class="form-control" id="${field.id}" placeholder="${field.placeholder}">
+                           <input type="number" class="form-control" id="${field.id}" placeholder="${field.placeholder}" aria-describedby="${field.id}Help">
+                           <small id="${field.id}Help" class="form-text text-muted">${field.description}</small>
                          </div>`;
             });
             html += `</div></div>`;
