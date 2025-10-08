@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análisis de Inversión Inmobiliaria | EcoMetric</title>
+    <meta name="description" content="Herramienta para evaluar la viabilidad financiera y el potencial de proyectos inmobiliarios.">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Roboto:wght@400;500&family=Inter:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="preloader"><img src="images/logo_square.jpg" alt="Cargando..." class="spinner"></div>
+
+    <header class="main-header">
+         <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="index.html"><span class="text-logo">EcoMetric</span></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-nav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="main-nav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWebApp" role="button" data-toggle="dropdown">Apps</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="app_sustainability_evaluator.html">Evaluador de Sostenibilidad</a>
+                                <a class="dropdown-item" href="app_urban_evaluator.html">Tasador Urbano</a>
+                                <a class="dropdown-item" href="app_investment_analysis.html">Análisis de Inversión</a>
+                            </div>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="contact.html">Contacto</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="page-header page-header-investment text-center">
+            <div class="container">
+                <h1 class="page-title">Análisis de Inversión PRO</h1>
+                <p class="lead">Evalúe la viabilidad financiera y el potencial de sus proyectos inmobiliarios.</p>
+            </div>
+        </section>
+
+        <div class="container my-5">
+            <div class="evaluator-main-content">
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <h3 class="mb-4">📝 Parámetros de Entrada</h3>
+                        <div id="input-forms-container"></div>
+                        <button id="analyzeBtn" class="btn btn-primary btn-lg btn-block mt-4">Ejecutar Análisis</button>
+                    </div>
+                    <aside class="col-lg-6">
+                        <div class="results-sidebar p-4">
+                            <h3 class="text-center mb-4">📊 Resultados del Análisis</h3>
+                            <div class="mb-4">
+                                <h4>Potencial Urbanístico</h4>
+                                <ul class="list-group"><li class="list-group-item d-flex justify-content-between">Área Máx. Edificable: <strong id="resBuildableArea">0 m²</strong></li><li class="list-group-item d-flex justify-content-between">Ocupación Máx. Suelo: <strong id="resFootprint">0 m²</strong></li><li class="list-group-item d-flex justify-content-between">Nº Teórico de Plantas: <strong id="resFloors">0</strong></li></ul>
+                            </div>
+                            <div class="mb-4">
+                                <h4>Viabilidad Financiera</h4>
+                                <ul class="list-group"><li class="list-group-item d-flex justify-content-between">Coste Total Construcción: <strong id="resConstructionCost">0 €</strong></li><li class="list-group-item d-flex justify-content-between">Inversión Total: <strong id="resTotalInvestment">0 €</strong></li><li class="list-group-item d-flex justify-content-between">Ingresos por Venta: <strong id="resSalesRevenue">0 €</strong></li><li class="list-group-item d-flex justify-content-between text-success"><strong>Beneficio Bruto:</strong> <strong id="resGrossProfit">0 €</strong></li><li class="list-group-item d-flex justify-content-between text-info"><strong>Margen s/Ventas:</strong> <strong id="resMargin">0 %</strong></li><li class="list-group-item d-flex justify-content-between text-primary"><strong>Retorno de Inversión (ROI):</strong> <strong id="resROI">0 %</strong></li></ul>
+                            </div>
+                            <div>
+                                <h4>Notas y Supuestos</h4>
+                                <small class="text-muted">Este es un análisis preliminar. Los cálculos no incluyen IVA, costes de licencias, costes financieros ni gastos de comercialización. El ROI se calcula sobre la inversión total (terreno + construcción).</small>
+                            </div>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <footer class="main-footer">
+        </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="script.js" defer></script>
+    <script src="script_investment_analysis.js"></script>
+</body>
+</html>

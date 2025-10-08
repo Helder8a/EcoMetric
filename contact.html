@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - EcoMetric</title>
+    <meta name="description" content="Póngase en contacto con el equipo de EcoMetric para preguntas, sugerencias o soporte.">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="preloader"><img src="images/logo_square.jpg" alt="Cargando..." class="spinner"></div>
+
+    <header class="main-header">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="index.html"><span class="text-logo">EcoMetric</span></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-nav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="main-nav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWebApp" role="button" data-toggle="dropdown">Apps</a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdownWebApp">
+                                <a class="dropdown-item" href="app_sustainability_evaluator.html">Evaluador de Sostenibilidad</a>
+                                <a class="dropdown-item" href="app_urban_evaluator.html">Tasador Urbano</a>
+                                <a class="dropdown-item" href="app_investment_analysis.html">Análisis de Inversión</a>
+                            </div>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="contact.html">Contacto</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="container py-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2 text-center">
+                <h1 class="section-title">Contáctenos</h1>
+                <p class="lead">¿Tiene alguna pregunta, sugerencia o necesita ayuda? Use el formulario a continuación o envíenos un correo electrónico a <a href="mailto:ecometric.contact@gmail.com">ecometric.contact@gmail.com</a>.</p>
+            </div>
+        </div>
+
+        <div class="row mt-5">
+            <div class="col-md-8 offset-md-2">
+                <div class="card p-4">
+                    <form name="contact" method="POST" data-netlify="true">
+                        <div class="form-group">
+                            <label for="name">Su Nombre</label>
+                            <input type="text" class="form-control" name="name" id="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Su Email</label>
+                            <input type="email" class="form-control" name="email" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Su Mensaje</label>
+                            <textarea class="form-control" name="message" id="message" rows="5" required></textarea>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary btn-lg">Enviar Mensaje</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="main-footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <h4 class="text-logo" style="font-size: 1.8rem;">EcoMetric</h4>
+                    <p>Construyendo un futuro sostenible, un proyecto a la vez.</p>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h4>Navegación</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="contact.html">Contacto</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                     <h4>Legal</h4>
+                    <ul class="list-unstyled">
+                        <li><a href="privacy-policy.html">Política de Privacidad</a></li>
+                        <li><a href="terms-of-service.html">Términos de Servicio</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <h4>Contacto</h4>
+                    <p>Un proyecto de <a href="mailto:hbo.consulting.pt@gmail.com">HBO Consulting</a>.</p>
+                </div>
+            </div>
+            <div class="footer-bottom text-center">
+                <p>&copy; 2025 EcoMetric.com | Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="script.js" defer></script>
+</body>
+</html>
