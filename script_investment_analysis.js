@@ -26,6 +26,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 { id: 'landCost', label: 'Total Land Cost ($)', placeholder: 'e.g., 500000', description: 'The total acquisition price of the land.' },
                 { id: 'sellPrice', label: 'Estimated Sale Price ($/m²)', placeholder: 'e.g., 2100', description: 'The projected price for one square meter of sellable residential area.' }
             ]
+        },
+        {
+            sectionTitle: 'Advanced Costs & Financing',
+            fields: [
+                { id: 'softCostsPercent', label: 'Soft Costs (licenses, fees, etc.) (%)', placeholder: 'e.g., 15', description: 'Percentage of construction cost for non-construction expenses like permits, design fees, etc.' },
+                { id: 'marketingCostsPercent', label: 'Marketing & Sales Costs (%)', placeholder: 'e.g., 5', description: 'Percentage of sales revenue for marketing and commission expenses.' },
+                { id: 'taxRatePercent', label: 'Tax Rate on Profit (%)', placeholder: 'e.g., 25', description: 'The corporate tax rate applied to the gross profit.' },
+                { id: 'loanToValuePercent', label: 'Financing / Loan-to-Value (%)', placeholder: 'e.g., 70', description: 'The percentage of the total investment that will be financed by a loan.' }
+            ]
         }
     ];
 
@@ -48,91 +57,138 @@ document.addEventListener('DOMContentLoaded', () => {
             formsContainer.innerHTML = html;
         }
     };
+    
+    // --- Main Calculation Function ---
+    const calculateFinancials = (inputs) => {
+        const { maxBuildableArea, totalParkingArea, landCost, buildCostPerArea, sellPricePerArea, softCostsPercent, marketingCostsPercent, taxRatePercent, loanToValuePercent } = inputs;
+        
+        const totalConstructionCost = maxBuildableArea * buildCostPerArea;
+        const softCosts = totalConstructionCost * softCostsPercent;
+        
+        const netSellableArea = maxBuildableArea - totalParkingArea;
+        const grossSalesRevenue = netSellableArea * sellPricePerArea;
+        const marketingCosts = grossSalesRevenue * marketingCostsPercent;
+
+        const otherCosts = softCosts + marketingCosts;
+        const totalInvestment = landCost + totalConstructionCost + otherCosts;
+        
+        const grossProfit = grossSalesRevenue - totalInvestment;
+        const taxes = grossProfit > 0 ? grossProfit * taxRatePercent : 0;
+        const netProfit = grossProfit - taxes;
+
+        const roi = totalInvestment > 0 ? (netProfit / totalInvestment) * 100 : 0;
+        
+        const loanAmount = totalInvestment * loanToValuePercent;
+        const equity = totalInvestment - loanAmount;
+        const cashOnCashReturn = equity > 0 ? (netProfit / equity) * 100 : 0;
+
+        return { totalConstructionCost, otherCosts, totalInvestment, grossSalesRevenue, grossProfit, taxes, netProfit, roi, cashOnCashReturn };
+    };
 
     const runAnalysis = () => {
         const getValue = (id) => parseFloat(document.getElementById(id).value) || 0;
         
         // --- Get all input values ---
-        const landArea = getValue('landArea');
-        const far = getValue('floorAreaRatio');
-        const lotCoverage = getValue('maxLotCoverage') / 100;
-        const maxHeight = getValue('maxBuildingHeight');
-        
-        const avgUnitSize = getValue('avgUnitSize');
-        const parkingPerUnit = getValue('parkingPerUnit');
-        const visitorParkingPercent = getValue('visitorParkingPercent') / 100;
-        const bikeParkingPerUnit = getValue('bikeParkingPerUnit');
-
-        const buildCostPerArea = getValue('buildCost');
-        const landCost = getValue('landCost');
-        const sellPricePerArea = getValue('sellPrice');
+        const baseInputs = {
+            landArea: getValue('landArea'),
+            far: getValue('floorAreaRatio'),
+            lotCoverage: getValue('maxLotCoverage') / 100,
+            maxHeight: getValue('maxBuildingHeight'),
+            avgUnitSize: getValue('avgUnitSize'),
+            parkingPerUnit: getValue('parkingPerUnit'),
+            visitorParkingPercent: getValue('visitorParkingPercent') / 100,
+            bikeParkingPerUnit: getValue('bikeParkingPerUnit'),
+            buildCost: getValue('buildCost'),
+            landCost: getValue('landCost'),
+            sellPrice: getValue('sellPrice'),
+            softCostsPercent: getValue('softCostsPercent') / 100,
+            marketingCostsPercent: getValue('marketingCostsPercent') / 100,
+            taxRatePercent: getValue('taxRatePercent') / 100,
+            loanToValuePercent: getValue('loanToValuePercent') / 100
+        };
 
         // --- Constants ---
-        const GROSS_AREA_PER_CAR_SPACE = 28; // Includes circulation (m²)
-        const GROSS_AREA_PER_BIKE_SPACE = 1.5; // (m²)
+        const GROSS_AREA_PER_CAR_SPACE = 28;
+        const GROSS_AREA_PER_BIKE_SPACE = 1.5;
 
-        // --- Calculations ---
-        const maxBuildableArea = landArea * far;
-        const maxFootprint = landArea * lotCoverage;
+        // --- Urban Calculations ---
+        const maxBuildableArea = baseInputs.landArea * baseInputs.far;
+        const maxFootprint = baseInputs.landArea * baseInputs.lotCoverage;
         let theoreticalFloors = maxFootprint > 0 ? maxBuildableArea / maxFootprint : 0;
-        if (maxHeight > 0 && theoreticalFloors > maxHeight) {
-            theoreticalFloors = maxHeight;
+        if (baseInputs.maxHeight > 0 && theoreticalFloors > baseInputs.maxHeight) {
+            theoreticalFloors = baseInputs.maxHeight;
         }
-
-        const numberOfUnits = avgUnitSize > 0 ? Math.floor(maxBuildableArea / avgUnitSize) : 0;
-
-        // Parking calculations
-        const residentialSpaces = numberOfUnits * parkingPerUnit;
-        const visitorSpaces = residentialSpaces * visitorParkingPercent;
+        const numberOfUnits = baseInputs.avgUnitSize > 0 ? Math.floor(maxBuildableArea / baseInputs.avgUnitSize) : 0;
+        
+        const residentialSpaces = numberOfUnits * baseInputs.parkingPerUnit;
+        const visitorSpaces = residentialSpaces * baseInputs.visitorParkingPercent;
         const totalCarSpaces = Math.ceil(residentialSpaces + visitorSpaces);
-        const totalBikeSpaces = Math.ceil(numberOfUnits * bikeParkingPerUnit);
-
+        const totalBikeSpaces = Math.ceil(numberOfUnits * baseInputs.bikeParkingPerUnit);
         const totalParkingArea = (totalCarSpaces * GROSS_AREA_PER_CAR_SPACE) + (totalBikeSpaces * GROSS_AREA_PER_BIKE_SPACE);
 
-        // Financial calculations
-        const totalConstructionCost = maxBuildableArea * buildCostPerArea;
-        const totalInvestment = landCost + totalConstructionCost;
-        
-        // Revenue is calculated on NET sellable area (buildable area minus parking area)
-        const netSellableArea = maxBuildableArea - totalParkingArea;
-        const totalSalesRevenue = netSellableArea * sellPricePerArea;
-        
-        const grossProfit = totalSalesRevenue - totalInvestment;
-        const margin = totalSalesRevenue > 0 ? (grossProfit / totalSalesRevenue) * 100 : 0;
-        const roi = totalInvestment > 0 ? (grossProfit / totalInvestment) * 100 : 0;
+        // --- Base Financial Calculation ---
+        const finInputs = { maxBuildableArea, totalParkingArea, landCost: baseInputs.landCost, buildCostPerArea: baseInputs.buildCost, sellPricePerArea: baseInputs.sellPrice, ...baseInputs };
+        const baseFinancials = calculateFinancials(finInputs);
 
         updateResults({
             maxBuildableArea, maxFootprint, theoreticalFloors, numberOfUnits,
             totalCarSpaces, totalBikeSpaces, totalParkingArea,
-            totalConstructionCost, totalInvestment, totalSalesRevenue,
-            grossProfit, margin, roi
+            ...baseFinancials
         });
+
+        // --- Sensitivity Analysis ---
+        const sensitivityResults = {};
+        const variations = [-0.10, 0, 0.10]; // -10%, Base, +10%
+
+        // Vary Sell Price
+        sensitivityResults.sellPrice = variations.map(v => {
+            const variedFinInputs = { ...finInputs, sellPricePerArea: baseInputs.sellPrice * (1 + v) };
+            return calculateFinancials(variedFinInputs).netProfit;
+        });
+
+        // Vary Build Cost
+        sensitivityResults.buildCost = variations.map(v => {
+            const variedFinInputs = { ...finInputs, buildCostPerArea: baseInputs.buildCost * (1 + v) };
+            return calculateFinancials(variedFinInputs).netProfit;
+        });
+        
+        updateSensitivityTable(sensitivityResults);
     };
 
     const updateResults = (results) => {
-        const currencyFormat = { style: 'currency', currency: 'USD', minimumFractionDigits: 0 };
-        const numberFormat = { minimumFractionDigits: 0, maximumFractionDigits: 0 };
+        const currency = (val) => val.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+        const number = (val) => val.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
         
-        document.getElementById('resBuildableArea').textContent = `${results.maxBuildableArea.toLocaleString('en-US', numberFormat)} m²`;
-        document.getElementById('resFootprint').textContent = `${results.maxFootprint.toLocaleString('en-US', numberFormat)} m²`;
+        document.getElementById('resBuildableArea').textContent = `${number(results.maxBuildableArea)} m²`;
+        document.getElementById('resFootprint').textContent = `${number(results.maxFootprint)} m²`;
         document.getElementById('resFloors').textContent = results.theoreticalFloors.toFixed(1);
-        document.getElementById('resTotalUnits').textContent = results.numberOfUnits.toLocaleString('en-US', numberFormat);
-
-        document.getElementById('resCarSpaces').textContent = results.totalCarSpaces.toLocaleString('en-US', numberFormat);
-        document.getElementById('resBikeSpaces').textContent = results.totalBikeSpaces.toLocaleString('en-US', numberFormat);
-        document.getElementById('resParkingArea').textContent = `${results.totalParkingArea.toLocaleString('en-US', numberFormat)} m²`;
-        
-        document.getElementById('resConstructionCost').textContent = results.totalConstructionCost.toLocaleString('en-US', currencyFormat);
-        document.getElementById('resTotalInvestment').textContent = results.totalInvestment.toLocaleString('en-US', currencyFormat);
-        document.getElementById('resSalesRevenue').textContent = results.totalSalesRevenue.toLocaleString('en-US', currencyFormat);
-        document.getElementById('resGrossProfit').textContent = results.grossProfit.toLocaleString('en-US', currencyFormat);
-        document.getElementById('resMargin').textContent = `${results.margin.toFixed(2)} %`;
+        document.getElementById('resTotalUnits').textContent = number(results.numberOfUnits);
+        document.getElementById('resCarSpaces').textContent = number(results.totalCarSpaces);
+        document.getElementById('resBikeSpaces').textContent = number(results.totalBikeSpaces);
+        document.getElementById('resParkingArea').textContent = `${number(results.totalParkingArea)} m²`;
+        document.getElementById('resConstructionCost').textContent = currency(results.totalConstructionCost);
+        document.getElementById('resOtherCosts').textContent = currency(results.otherCosts);
+        document.getElementById('resTotalInvestment').textContent = currency(results.totalInvestment);
+        document.getElementById('resSalesRevenue').textContent = currency(results.grossSalesRevenue);
+        document.getElementById('resGrossProfit').textContent = currency(results.grossProfit);
+        document.getElementById('resTaxes').textContent = currency(results.taxes);
+        document.getElementById('resNetProfit').textContent = currency(results.netProfit);
         document.getElementById('resROI').textContent = `${results.roi.toFixed(2)} %`;
+        document.getElementById('resCoC').textContent = `${results.cashOnCashReturn.toFixed(2)} %`;
+    };
+
+    const updateSensitivityTable = (results) => {
+        const currency = (val) => val.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+
+        document.getElementById('sensSellPriceLow').textContent = currency(results.sellPrice[0]);
+        document.getElementById('sensSellPriceBase').textContent = currency(results.sellPrice[1]);
+        document.getElementById('sensSellPriceHigh').textContent = currency(results.sellPrice[2]);
+
+        document.getElementById('sensBuildCostLow').textContent = currency(results.buildCost[0]);
+        document.getElementById('sensBuildCostBase').textContent = currency(results.buildCost[1]);
+        document.getElementById('sensBuildCostHigh').textContent = currency(results.buildCost[2]);
     };
 
     generateForms();
-    const analyzeBtn = document.getElementById('analyzeBtn');
-    if (analyzeBtn) {
-        analyzeBtn.addEventListener('click', runAnalysis);
-    }
+    document.getElementById('analyzeBtn')?.addEventListener('click', runAnalysis);
 });
