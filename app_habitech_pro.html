@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habitability & Tech PRO | POE & Digital Twin - EcoMetric</title>
+    <meta name="description" content="Measure the real performance of buildings, occupant comfort, and technological efficiency post-occupancy.">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Roboto:wght@400;500&family=Inter:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .page-header-habitech { background-image: url('https://images.unsplash.com/photo-1549419137-b6f3c02e1b6f?q=80&w=2670&auto=format&fit=crop'); }
+    </style>
+</head>
+<body>
+    <div id="preloader"><img src="images/logo_square.jpg" alt="Loading..." class="spinner"></div>
+
+    <header class="main-header">
+       <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="index.html"><span class="text-logo">EcoMetric</span></a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#main-nav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="main-nav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWebApp" role="button" data-toggle="dropdown">Apps</a>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="app_sustainability_evaluator.html">Sustainability Evaluator</a>
+                                <a class="dropdown-item" href="app_urban_evaluator.html">Urban Appraiser</a>
+                                <a class="dropdown-item" href="app_investment_analysis.html">Investment Analysis</a>
+                                <a class="dropdown-item" href="app_habitech_pro.html">Habitability & Tech PRO</a>
+                            </div>
+                        </li>
+                        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="page-header page-header-habitech text-center">
+            <div class="container">
+                <h1 class="page-title">Habitability & Tech PRO</h1>
+                <p class="lead">Measure the real performance of your asset and occupant well-being (POE).</p>
+            </div>
+        </section>
+
+        <div class="container my-5">
+            <div class="evaluator-main-content">
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <h3 class="mb-4">1. Post-Occupancy Evaluation (POE)</h3>
+                        <form id="habitech-form" onsubmit="return false;">
+                            <div class="card mb-4">
+                                <div class="card-header"><h5>Comfort & Health Metrics</h5></div>
+                                <div class="card-body">
+                                    <div class="form-group"><label for="comfortScore">Occupant Thermal Comfort Score (1-5)</label><input type="number" class="form-control" id="comfortScore" required min="1" max="5" value="4"></div>
+                                    <div class="form-group"><label for="airQualityScore">Perceived Air Quality Score (1-5)</label><input type="number" class="form-control" id="airQualityScore" required min="1" max="5" value="4"></div>
+                                    <div class="form-group"><label for="acousticScore">Acoustic Comfort Score (1-5)</label><input type="number" class="form-control" id="acousticScore" required min="1" max="5" value="3"></div>
+                                </div>
+                            </div>
+
+                            <div class="card mb-4">
+                                <div class="card-header"><h5>Digital Twin Calibration</h5></div>
+                                <div class="card-body">
+                                    <div class="form-group"><label for="projectedConsumption">Projected Annual Energy Consumption (kWh/m²)</label><input type="number" class="form-control" id="projectedConsumption" required min="0" value="75"></div>
+                                    <div class="form-group"><label for="realConsumption">Real Annual Energy Consumption (kWh/m²)</label><input type="number" class="form-control" id="realConsumption" required min="0" value="85"></div>
+                                    <div class="form-group"><label for="projectedMaintenance">Projected Annual Maintenance Cost ($)</label><input type="number" class="form-control" id="projectedMaintenance" required min="0" value="5000"></div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-lg btn-block mt-4">Generate Performance Report</button>
+                        </form>
+                    </div>
+
+                    <aside class="col-lg-6">
+                        <div class="results-sidebar">
+                            <h3 class="text-center mb-4">📊 Operational Performance Summary</h3>
+                            <div class="text-center mb-4">
+                                <h4>Habitability (POE) Score</h4>
+                                <h1 id="habitechScore" class="display-3 font-weight-bold text-success">N/A</h1>
+                                <p class="text-muted">Max 5.0 - Validation of WELL/LiderA targets.</p>
+                            </div>
+                            <hr>
+                            <div class="mb-4">
+                                <h4>Energy Performance Deviation</h4>
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between">Deviation: <strong id="energyDeviation">0 %</strong></li>
+                                    <li class="list-group-item d-flex justify-content-between">Real Consumption: <strong id="realCons">0 kWh/m²</strong></li>
+                                    <li class="list-group-item d-flex justify-content-between">Recommendation: <strong id="energyRec" class="text-info">Analyze</strong></li>
+                                </ul>
+                            </div>
+                            <div class="mb-4">
+                                <h4>LCCA & Maintenance Alert</h4>
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between">Next Component Alert (Simulated): <strong id="nextAlert">N/A</strong></li>
+                                    <li class="list-group-item d-flex justify-content-between">Expected Replacement Year: <strong id="replacementYear">N/A</strong></li>
+                                </ul>
+                            </div>
+                            <button id="generatePOEBtn" class="btn btn-info btn-block mt-3" style="display:none;"><i class="fas fa-file-alt mr-2"></i>Generate Full POE Report</button>
+                        </div>
+                    </aside>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div class="modal fade" id="POEModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title">Comprehensive POE & Validation Report</h5><button class="close" data-dismiss="modal">&times;</button></div>
+                <div class="modal-body" id="POEOutputContent">
+                    </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" onclick="printReportPOE();"><i class="fas fa-print mr-2"></i>Print Report</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer class="main-footer"></footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="script.js" defer></script>
+    <script src="lcca_db.js"></script>
+    <script src="script_habitech_pro.js"></script>
+</body>
+</html>
