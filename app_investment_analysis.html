@@ -34,7 +34,6 @@
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownWebApp" role="button" data-toggle="dropdown">Apps</a>
                             <div class="dropdown-menu">
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdownWebApp">
                                 <a class="dropdown-item" href="app_sustainability_evaluator.html">Sustainability Evaluator</a>
                                 <a class="dropdown-item" href="app_urban_evaluator.html">Urban Appraiser</a>
                                 <a class="dropdown-item" href="app_investment_analysis.html">Investment Analysis</a>
@@ -65,7 +64,7 @@
                     <div class="row justify-content-center" id="project-type-options">
                         <div class="col-md-6 mb-3">
                             <button class="btn btn-lg btn-block btn-info btn-project-type" data-type="restauracion">
-                                <i class="fas fa-hammer mr-2"></i> Restoration / Building to be Rehabilitated
+                                <i class="fas fa-hammer mr-2"></i> Restoration / Building Rehabilitation
                             </button>
                         </div>
                         <div class="col-md-6 mb-3">
@@ -82,6 +81,15 @@
                         <div class="col-lg-6 mb-4">
                             <h3 class="mb-4">📝 Input Parameters</h3>
                             
+                            <div class="form-group">
+                                <label for="currencySelector"><strong>1. Currency Selection</strong></label>
+                                <select id="currencySelector" class="form-control">
+                                    <option value="USD" selected>$ (USD - US Dollar)</option>
+                                    <option value="EUR">€ (EUR - Euro)</option>
+                                    <option value="GBP">£ (GBP - British Pound)</option>
+                                </select>
+                            </div>
+                            <hr>
                             <form id="investment-analysis-form" onsubmit="return false;"> 
                                 <div id="input-forms-container">
                                     </div>
