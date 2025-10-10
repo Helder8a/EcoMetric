@@ -10,6 +10,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&family=Roboto:wght@400;500&family=Inter:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
+    <style>
+        .app-screen { display: none; }
+        .app-screen.active-screen { display: block; }
+        .btn-project-type { padding: 30px 15px; font-weight: 700; transition: transform 0.3s; font-size: 1.1em; }
+        .btn-project-type:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,.15); }
+        #restauracion-results .list-group-item strong { font-weight: 600; }
+        #restauracion-results .list-group-item:nth-child(even) { background-color: rgba(255, 171, 0, 0.05); }
+    </style>
 </head>
 <body>
     <div id="preloader"><img src="images/logo_square.jpg" alt="Loading..." class="spinner"></div>
@@ -48,75 +56,108 @@
 
         <div class="container my-5">
             <div class="evaluator-main-content">
-                <div class="row">
-                    <div class="col-lg-6 mb-4">
-                        <h3 class="mb-4">📝 Input Parameters</h3>
-                        <div id="input-forms-container"></div>
-                        <button id="analyzeBtn" class="btn btn-primary btn-lg btn-block mt-4">Run Analysis</button>
-                    </div>
-                    <aside class="col-lg-6">
-                        <div class="results-sidebar p-4">
-                            <h3 class="text-center mb-4">📊 Analysis Results</h3>
-                            <div class="mb-4">
-                                <h4>Urban Potential</h4>
-                                <ul class="list-group">
-                                    <li class="list-group-item d-flex justify-content-between">Max Buildable Area: <strong id="resBuildableArea">0 m²</strong></li>
-                                    <li class="list-group-item d-flex justify-content-between">Max Footprint: <strong id="resFootprint">0 m²</strong></li>
-                                    <li class="list-group-item d-flex justify-content-between">Theoretical Floors: <strong id="resFloors">0</strong></li>
-                                    <li class="list-group-item d-flex justify-content-between">Total Residential Units: <strong id="resTotalUnits">0</strong></li>
-                                    <li class="list-group-item d-flex justify-content-between">Total Car Spaces: <strong id="resCarSpaces">0</strong></li>
-                                    <li class="list-group-item d-flex justify-content-between">Total Bike Spaces: <strong id="resBikeSpaces">0</strong></li>
-                                    <li class="list-group-item d-flex justify-content-between">Total Parking Area: <strong id="resParkingArea">0 m²</strong></li>
-                                </ul>
-                            </div>
-                             <div class="mb-4">
-                                <h4>Financial Viability</h4>
-                                <ul class="list-group">
-                                    <li class="list-group-item d-flex justify-content-between">Total Construction Cost: <strong id="resConstructionCost">$0</strong></li>
-                                    <li class="list-group-item d-flex justify-content-between">(-) Other Costs (Licenses, etc.): <strong id="resOtherCosts">$0</strong></li>
-                                    <li class="list-group-item d-flex justify-content-between"><strong>Total Investment:</strong> <strong id="resTotalInvestment">$0</strong></li>
-                                    <li class="list-group-item d-flex justify-content-between">Sales Revenue (Gross): <strong id="resSalesRevenue">$0</strong></li>
-                                    <li class="list-group-item d-flex justify-content-between text-success"><strong>Gross Profit:</strong> <strong id="resGrossProfit">$0</strong></li>
-                                    <li class="list-group-item d-flex justify-content-between text-danger">(-) Taxes: <strong id="resTaxes">$0</strong></li>
-                                    <li class="list-group-item d-flex justify-content-between text-success"><strong>Net Profit:</strong> <strong id="resNetProfit">$0</strong></li>
-                                    <li class="list-group-item d-flex justify-content-between text-primary"><strong>Return on Investment (ROI):</strong> <strong id="resROI">0 %</strong></li>
-                                    <li class="list-group-item d-flex justify-content-between text-info"><strong>Cash-on-Cash Return:</strong> <strong id="resCoC">0 %</strong></li>
-                                </ul>
-                            </div>
-                            <div class="mb-4">
-                                <h4>Sensitivity Analysis</h4>
-                                <table class="table table-bordered text-center table-sm">
-                                    <thead>
-                                        <tr>
-                                            <th>Variable</th>
-                                            <th>-10%</th>
-                                            <th>Base</th>
-                                            <th>+10%</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Sale Price</td>
-                                            <td id="sensSellPriceLow">...</td>
-                                            <td id="sensSellPriceBase">...</td>
-                                            <td id="sensSellPriceHigh">...</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Construction Cost</td>
-                                            <td id="sensBuildCostLow">...</td>
-                                            <td id="sensBuildCostBase">...</td>
-                                            <td id="sensBuildCostHigh">...</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                                <small class="text-muted">The table shows the resulting Net Profit for each scenario.</small>
-                            </div>
+                
+                <section id="selection-screen" class="app-screen active-screen text-center">
+                    <h2 class="section-title">Choose the Project Type</h2>
+                    <p class="lead mb-4">Select the focus of your investment evaluation to generate the correct financial and ecometric reports.</p>
+                    <div class="row justify-content-center" id="project-type-options">
+                        <div class="col-md-6 mb-3">
+                            <button class="btn btn-lg btn-block btn-info btn-project-type" data-type="restauracion">
+                                <i class="fas fa-hammer mr-2"></i> Restoration / Building to be Rehabilitated
+                            </button>
                         </div>
-                    </aside>
-                </div>
+                        <div class="col-md-6 mb-3">
+                            <button class="btn btn-lg btn-block btn-primary btn-project-type" data-type="obra-nueva">
+                                <i class="fas fa-building mr-2"></i> New Construction / Greenfield Development
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="analysis-screen" class="app-screen">
+                    <h2 id="project-type-title" class="section-title text-center"></h2>
+                    <div class="row">
+                        <div class="col-lg-6 mb-4">
+                            <h3 class="mb-4">📝 Input Parameters</h3>
+                            
+                            <form id="investment-analysis-form" onsubmit="return false;"> 
+                                <div id="input-forms-container">
+                                    </div>
+                                <button type="submit" id="analyzeBtn" class="btn btn-primary btn-lg btn-block mt-4">Run Analysis</button>
+                            </form>
+                            </div>
+                        <aside class="col-lg-6">
+                            <div class="results-sidebar p-4">
+                                <h3 class="text-center mb-4">📊 Quick Results</h3>
+                                
+                                <div id="restauracion-results" style="display:none;"></div> 
+
+                                <div id="obra-nueva-results-container">
+                                    <div class="mb-4">
+                                        <h4>Urban Potential</h4>
+                                        <ul class="list-group">
+                                            <li class="list-group-item d-flex justify-content-between">Max Buildable Area: <strong id="resBuildableArea">0 m²</strong></li>
+                                            <li class="list-group-item d-flex justify-content-between">Max Lot Coverage: <strong id="resFootprint">0 m²</strong></li>
+                                            <li class="list-group-item d-flex justify-content-between">Theoretical Floors: <strong id="resFloors">0</strong></li>
+                                            <li class="list-group-item d-flex justify-content-between">Total Residential Units: <strong id="resTotalUnits">0</strong></li>
+                                            <li class="list-group-item d-flex justify-content-between">Total Car Spaces: <strong id="resCarSpaces">0</strong></li>
+                                            <li class="list-group-item d-flex justify-content-between">Total Bike Spaces: <strong id="resBikeSpaces">0</strong></li>
+                                            <li class="list-group-item d-flex justify-content-between">Total Parking Area: <strong id="resParkingArea">0 m²</strong></li>
+                                        </ul>
+                                    </div>
+                                    <div class="mb-4">
+                                        <h4>Financial Viability</h4>
+                                        <ul class="list-group">
+                                            <li class="list-group-item d-flex justify-content-between">Total Construction Cost: <strong id="resConstructionCost">$0</strong></li>
+                                            <li class="list-group-item d-flex justify-content-between">(-) Other Costs (Licenses, etc.): <strong id="resOtherCosts">$0</strong></li>
+                                            <li class="list-group-item d-flex justify-content-between"><strong>Total Investment:</strong> <strong id="resTotalInvestment">$0</strong></li>
+                                            <li class="list-group-item d-flex justify-content-between">Sales Revenue (Gross): <strong id="resSalesRevenue">$0</strong></li>
+                                            <li class="list-group-item d-flex justify-content-between text-success"><strong>Gross Profit:</strong> <strong id="resGrossProfit">$0</strong></li>
+                                            <li class="list-group-item d-flex justify-content-between text-danger">(-) Taxes: <strong id="resTaxes">$0</strong></li>
+                                            <li class="list-group-item d-flex justify-content-between text-success"><strong>Net Profit:</strong> <strong id="resNetProfit">$0</strong></li>
+                                            <li class="list-group-item d-flex justify-content-between text-primary"><strong>Return on Investment (ROI):</strong> <strong id="resROI">0 %</strong></li>
+                                            <li class="list-group-item d-flex justify-content-between text-info"><strong>Cash-on-Cash Return:</strong> <strong id="resCoC">0 %</strong></li>
+                                        </ul>
+                                    </div>
+                                    <div id="sensitivity-analysis-container-on" class="mb-4">
+                                        <h4>Sensitivity Analysis</h4>
+                                        <table class="table table-bordered text-center table-sm">
+                                            <thead>
+                                                <tr><th>Variable</th><th>-10%</th><th>Base</th><th>+10%</th></tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr><td>Sale Price</td><td id="sensSellPriceLow">...</td><td id="sensSellPriceBase">...</td><td id="sensSellPriceHigh">...</td></tr>
+                                                <tr><td>Construction Cost</td><td id="sensBuildCostLow">...</td><td id="sensBuildCostBase">...</td><td id="sensBuildCostHigh">...</td></tr>
+                                            </tbody>
+                                        </table>
+                                        <small class="text-muted">The table shows the resulting Net Profit for each scenario.</small>
+                                    </div>
+                                </div>
+                                <div id="sensitivity-analysis-container-restauracion" class="mb-4" style="display:none;"></div>
+
+                                <button id="generateReportBtn" class="btn btn-info btn-block mt-3" style="display:none;"><i class="fas fa-file-alt mr-2"></i>Generate Comprehensive Report</button>
+                                <button onclick="resetAppInvestment()" class="btn btn-secondary btn-block mt-2"><i class="fas fa-arrow-left mr-2"></i>New Evaluation</button>
+                            </div>
+                        </aside>
+                    </div>
+                </section>
             </div>
         </div>
     </main>
+    
+    <div class="modal fade" id="completeReportModal" tabindex="-1">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header"><h5 class="modal-title" id="reportModalTitle">Investment and Ecometric Report</h5><button class="close" data-dismiss="modal">&times;</button></div>
+                <div class="modal-body" id="reportOutputContent">
+                    </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button class="btn btn-primary" onclick="printReportInvestment();"><i class="fas fa-print mr-2"></i>Print Report</button>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <footer class="main-footer">
     </footer>

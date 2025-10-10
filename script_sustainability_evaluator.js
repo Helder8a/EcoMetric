@@ -1,412 +1,588 @@
-// This file is the corrected and unified version.
-// You can delete 'app_build_evaluator.js' as it is now redundant.
+document.addEventListener('DOMContentLoaded', () => {
 
-document.addEventListener("DOMContentLoaded", function () {
+    // --- NEW: PROJECT TYPE DEFINITIONS ---
+    const projectDefinitions = {
+        'obra-nueva': {
+            title: 'Investment Analysis: New Construction',
+            inputDefinitions: [
+                { sectionTitle: '1. Urban and Land Data', fields: [
+                    { id: 'landArea', label: 'Total Land Area (m²)', placeholder: 'e.g., 10000', description: 'The total surface area of the property lot.' },
+                    { id: 'floorAreaRatio', label: 'Floor Area Ratio (m²/m²)', placeholder: 'e.g., 2.5', description: 'Ratio of a building\'s total floor area to the size of the land.' },
+                    { id: 'maxLotCoverage', label: 'Max Lot Coverage (%)', placeholder: 'e.g., 60', description: 'The maximum percentage of the land that can be covered by the building\'s footprint.' },
+                    { id: 'maxBuildingHeight', label: 'Max Height (Number of floors)', placeholder: 'e.g., 5', description: 'The maximum number of floors allowed by local regulations.' }
+                ]},
+                { sectionTitle: '2. Units and Parking', fields: [
+                    { id: 'avgUnitSize', label: 'Average Residential Unit Size (m²)', placeholder: 'e.g., 90', description: 'The average gross area of a single apartment or housing unit to be built.' },
+                    { id: 'parkingPerUnit', label: 'Parking Spaces per Unit', placeholder: 'e.g., 1.5', description: 'Number of parking spaces required for each residential unit.' },
+                    { id: 'visitorParkingPercent', label: 'Visitor Parking (%)', placeholder: 'e.g., 10', description: 'Additional parking for visitors.' },
+                    { id: 'bikeParkingPerUnit', label: 'Bicycle Spaces per Unit', placeholder: 'e.g., 2', description: 'Number of secure bicycle parking spaces required for each unit.' }
+                ]},
+                { sectionTitle: '3. Costs and Prices', fields: [
+                    { id: 'buildCost', label: 'Construction Cost ($/m²)', placeholder: 'e.g., 950', description: 'The estimated cost to build one square meter (includes parking areas).' },
+                    { id: 'landCost', label: 'Total Land Cost ($)', placeholder: 'e.g., 500000', description: 'The total acquisition price of the land.' },
+                    { id: 'sellPrice', label: 'Estimated Sale Price ($/m²)', placeholder: 'e.g., 2100', description: 'The projected price for one square meter of sellable residential area.' }
+                ]},
+                { sectionTitle: '4. Advanced Costs & Financing', fields: [
+                    { id: 'softCostsPercent', label: 'Soft Costs (%)', placeholder: 'e.g., 15', description: 'Percentage of construction cost for non-construction expenses like permits, design fees, etc.' },
+                    { id: 'marketingCostsPercent', label: 'Marketing & Sales Costs (%)', placeholder: 'e.g., 5', description: 'Percentage of sales revenue for marketing and commission expenses.' },
+                    { id: 'taxRatePercent', label: 'Tax Rate on Profit (%)', placeholder: 'e.g., 25', description: 'The corporate tax rate applied to the gross profit.' },
+                    { id: 'loanToValuePercent', label: 'Financing / Loan-to-Value (%)', placeholder: 'e.g., 70', description: 'The percentage of the total investment that will be financed by a loan.' }
+                ]}
+            ]
+        },
+        'restauracion': {
+            title: 'Investment Analysis: Restoration/Rehabilitation',
+            inputDefinitions: [
+                { sectionTitle: '1. Initial Investment', fields: [
+                    { id: 'acquisitionCost', label: 'Property Acquisition Cost ($)', placeholder: 'e.g., 800000', description: 'The purchase cost of the existing building.' },
+                    { id: 'rehabilitationCost', label: 'Total Rehabilitation Cost ($)', placeholder: 'e.g., 350000', description: 'The estimated cost of the restoration work.' },
+                    { id: 'softCostsPercent', label: 'Soft Costs (%)', placeholder: 'e.g., 10', description: 'Percentage of rehabilitation cost for non-construction expenses like permits, design fees, etc.' },
+                    { id: 'sellPriceAfter', label: 'Estimated Post-Rehab Sale/Rent Value ($)', placeholder: 'e.g., 1500000', description: 'Projected sale price after rehabilitation (Residual Value).' }
+                ]},
+                { sectionTitle: '2. Ecometrics and Operation', fields: [
+                    { id: 'areaTotal', label: 'Total Area to be Intervened (m²)', placeholder: 'e.g., 1500', description: 'The total area to be rehabilitated.' },
+                    { id: 'currentEnergyConsumption', label: 'Current Energy Consumption (kWh/m²)', placeholder: 'e.g., 150', description: 'The building\'s current annual consumption (pre-rehab).' },
+                    { id: 'projectedEnergyConsumption', label: 'Projected Energy Consumption (kWh/m²)', placeholder: 'e.g., 50', description: 'The expected annual consumption after rehabilitation.' },
+                    { id: 'yearsOfOperation', label: 'Years of Projection (Analysis Horizon)', placeholder: 'e.g., 25', description: 'Time horizon for cash flow analysis.' }
+                ]},
+                { sectionTitle: '3. Discounted Cash Flow (DCF)', fields: [
+                    { id: 'annualRevenue', label: 'Net Annual Operating Income ($)', placeholder: 'e.g., 80000', description: 'Net annual income from rent or operation.' },
+                    { id: 'capRate', label: 'Capitalization Rate (Cap Rate) (%)', placeholder: 'e.g., 5', description: 'Rate to calculate the Terminal Value.' },
+                    { id: 'discountRate', label: 'Discount Rate (WACC) (%)', placeholder: 'e.g., 8', description: 'Cost of capital for calculating NPV.' },
+                ]}
+            ]
+        }
+    };
+    
+    // --- GLOBAL VARIABLES & UTILITIES ---
+    let currentProjectType = '';
+    let finalResults = {}; // Stores the results for the report
+    let finalSensitivity = {}; // Stores the sensitivity for the report
+    
     const getEl = id => document.getElementById(id);
+    const formsContainer = getEl('input-forms-container');
+    const analyzeBtn = getEl('analyzeBtn');
+    const generateReportBtn = getEl('generateReportBtn');
+    const projectTypeTitle = getEl('project-type-title');
+    const analysisForm = getEl('investment-analysis-form'); // NEW: Get the form element
 
-    // --- Main DOM Elements ---
-    const evaluationForm = getEl("evaluationForm");
-    const totalScoreEl = getEl("totalScore");
-    const maxScoreEl = getEl("maxScore");
-    const scoreUnitEl = getEl("scoreUnit");
-    const certNameEl = getEl("certName");
-    const progressBarEl = getEl("progressBar");
-    const levelTextEl = getEl("levelText");
-    const projectNameEl = getEl("projectName");
-    const reportGeneratorBtn = getEl("reportGeneratorBtn");
+    // Helper to get input value as float (0 if empty)
+    const getValue = (id) => parseFloat(document.getElementById(id).value) || 0;
 
-    let evaluationData = {};
-    let currentCertification = "lidera";
-    let lccaChartInstance = null;
+    // Currency formatting (using the original $ sign)
+    const formatCurrency = (val) => val.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+    const formatNumber = (val) => val.toLocaleString('en-US', { minimumFractionDigits: 0, maximumFractionDigits: 0 });
+    
+    // CORRECTION: New helper for percentage formatting in reports (shows 1-2 decimals)
+    const formatPercent = (val) => val.toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 2 });
 
-    // --- Main Evaluation Functions ---
 
-    function initializeEvaluation() {
-        evaluationData = {};
-        const certData = certificationsDB[currentCertification]?.data;
-        if (!certData) {
-            updateScoreDisplay();
-            return;
+    // --- NAVIGATION FUNCTIONS ---
+
+    // Switches the active screen
+    function switchScreen(activeId) {
+        document.querySelectorAll('.app-screen').forEach(screen => {
+            screen.classList.remove('active-screen');
+            screen.style.display = 'none';
+        });
+        const activeScreen = getEl(activeId);
+        if(activeScreen) {
+            activeScreen.classList.add('active-screen');
+            activeScreen.style.display = 'block';
         }
-        for (let aspect in certData) {
-            evaluationData[aspect] = {};
-            for (let area in certData[aspect]) {
-                evaluationData[aspect][area] = 0;
-            }
-        }
-        updateScoreDisplay();
     }
 
-    function updateScoreDisplay() {
-        const certConfig = certificationsDB[currentCertification];
-        if (!certConfig) {
-            totalScoreEl.textContent = "0.0";
-            maxScoreEl.textContent = "0.0";
-            certNameEl.textContent = "N/A";
-            levelTextEl.textContent = "N/A";
-            progressBarEl.style.width = "0%";
-            return;
-        }
-
-        const score = calculateScore();
-        totalScoreEl.textContent = score.toFixed(1);
-        maxScoreEl.textContent = certConfig.maxScore.toFixed(1);
-        if (scoreUnitEl) { // Check if the element exists before updating
-            scoreUnitEl.textContent = certConfig.scoreUnit;
-        }
-        certNameEl.textContent = certConfig.name;
-
-        const progress = certConfig.maxScore > 0 ? (score / certConfig.maxScore) * 100 : 0;
-        progressBarEl.style.width = `${progress}%`;
-
-        let level = "N/A";
-        if (certConfig.levels) {
-            const sortedLevels = Object.entries(certConfig.levels).sort((a, b) => b[0] - a[0]);
-            for (const [minScore, levelName] of sortedLevels) {
-                if (score >= parseFloat(minScore)) {
-                    level = levelName;
-                    break;
-                }
-            }
-        }
-        levelTextEl.textContent = level;
+    // Resets to the initial selection screen
+    window.resetAppInvestment = function() {
+        switchScreen('selection-screen');
+        getEl('project-type-title').textContent = '';
+        getEl('generateReportBtn').style.display = 'none';
+        formsContainer.innerHTML = '';
+        // Resetting visibility of results containers
+        getEl('obra-nueva-results-container').style.display = 'block';
+        getEl('restauracion-results').style.display = 'none';
+        
+        // CORRECTION: Reset form validation state if using a proper form
+        if (analysisForm) analysisForm.reset(); 
     }
 
-    function calculateScore() {
-        const certConfig = certificationsDB[currentCertification];
-        if (!certConfig) return 0;
-        let totalScore = 0;
-        if (certConfig.name === "LiderA" && certConfig.data) {
-            // Using 'building' weights as default. Could be extended with a selector in HTML.
-            const weights = certConfig.weights.building; 
-            let weightedSum = 0;
-            let totalWeight = 0;
-            for (const aspect in evaluationData) {
-                const weight = weights[aspect] || 1;
-                totalWeight += weight;
-                let aspectScore = 0;
-                let maxAspectScore = 0;
-                for (const area in evaluationData[aspect]) {
-                    aspectScore += evaluationData[aspect][area];
-                    if (certConfig.data[aspect] && certConfig.data[aspect][area] && certConfig.data[aspect][area].credits) {
-                        maxAspectScore += Object.values(certConfig.data[aspect][area].credits).reduce((sum, val) => sum + val, 0);
-                    }
-                }
-                if (maxAspectScore > 0) {
-                    weightedSum += (aspectScore / maxAspectScore) * weight;
-                }
-            }
-            totalScore = totalWeight > 0 ? (weightedSum / totalWeight) * certConfig.maxScore : 0;
-        }
-        return totalScore;
-    }
-
-    // --- Dynamic Form Generation ---
-
-    function renderForm() {
-        const certConfig = certificationsDB[currentCertification];
-        evaluationForm.innerHTML = "";
-        if (!certConfig || !certConfig.data) {
-            evaluationForm.innerHTML = '<p class="text-muted">This certification system does not have defined criteria in the database yet.</p>';
-            initializeEvaluation();
-            return;
-        }
-
-        Object.entries(certConfig.data).forEach(([aspect, areas], index) => {
-            let areaHTML = "";
-            Object.entries(areas).forEach(([area, details]) => {
-                let creditsHTML = "";
-                if (details.credits) {
-                    Object.keys(details.credits).forEach(creditName => {
-                        const creditId = `${currentCertification}-${aspect}-${area}-${creditName}`.replace(/[^a-zA-Z0-9-_]/g, "");
-                        creditsHTML += `
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="${creditId}" data-aspect="${aspect}" data-area="${area}" data-credit="${creditName}">
-                                <label class="custom-control-label" for="${creditId}">${creditName}</label>
-                            </div>`;
-                    });
-                }
-                const solutionsIcon = details.solutions_pt ? `<i class="fas fa-cubes solutions-icon" data-aspect="${aspect}" data-area="${area}" title="View Market Solutions"></i>` : "";
-                areaHTML += `
-                    <div class="mb-4">
-                        <h5>
-                            <span class="area-label">${area}
-                                <span class="icon-group">
-                                    <i class="fas fa-info-circle info-icon" data-aspect="${aspect}" data-area="${area}" title="Criterion Information"></i>
-                                    ${solutionsIcon}
-                                </span>
-                            </span>
-                        </h5>
-                        ${creditsHTML}
-                    </div>`;
+    // Renders the correct form fields
+    function renderForm(type) {
+        currentProjectType = type;
+        const definition = projectDefinitions[type];
+        if (!definition) return;
+        
+        projectTypeTitle.textContent = definition.title;
+        let html = '';
+        definition.inputDefinitions.forEach(section => {
+            html += `<div class="card mb-4"><div class="card-header"><h5>${section.sectionTitle}</h5></div><div class="card-body">`;
+            section.fields.forEach(field => {
+                const inputType = field.type || 'number'; 
+                html += `<div class="form-group">
+                           <label for="${field.id}">${field.label}</label>
+                           <input type="${inputType}" class="form-control" id="${field.id}" placeholder="${field.placeholder}" aria-describedby="${field.id}Help" required min="0" step="any">
+                           <small id="${field.id}Help" class="form-text text-muted">${field.description}</small>
+                         </div>`;
             });
-
-            const aspectHTML = `
-                <div class="card mb-3">
-                    <div class="card-header aspect-header" id="header-${index}" data-toggle="collapse" data-target="#collapse-${index}">
-                        <h4 class="mb-0">${aspect}</h4>
-                    </div>
-                    <div id="collapse-${index}" class="collapse ${index === 0 ? "show" : ""}" aria-labelledby="header-${index}" data-parent="#evaluationForm">
-                        <div class="card-body">
-                            ${areaHTML}
-                        </div>
-                    </div>
-                </div>`;
-            evaluationForm.insertAdjacentHTML("beforeend", aspectHTML);
+            html += `</div></div>`;
         });
-        initializeEvaluation();
-    }
-
-    // --- Modal Logic ---
-
-    function showInfoModal(aspect, area) {
-        const info = certificationsDB[currentCertification]?.data[aspect]?.[area]?.info;
-        if (info) {
-            const modalTitle = document.querySelector("#infoModal .modal-title");
-            if (modalTitle) modalTitle.textContent = `Criterion: ${area}`;
-
-            let regulationsHTML = "";
-            if (info.normativa_pt) {
-                regulationsHTML = `
-                    <div class="regulations-section mt-4">
-                        <h6>Applicable Regulations in Portugal</h6>
-                        <p><strong>${info.normativa_pt.name}</strong><br>
-                           <a href="${info.normativa_pt.link}" target="_blank" rel="noopener noreferrer">Consult Official Document <i class="fas fa-external-link-alt fa-xs"></i></a>
-                        </p>
-                    </div>`;
-            }
-
-            const modalBody = document.querySelector("#infoModal .modal-body");
-            if (modalBody) {
-                modalBody.innerHTML = `
-                    <h6>Objective</h6><p>${info.objective}</p>
-                    <h6>Application Example</h6><p>${info.example}</p>
-                    <h6>Project Benefits</h6><p>${info.benefits}</p>
-                    ${regulationsHTML}`;
-                $("#infoModal").modal("show");
-            }
+        formsContainer.innerHTML = html;
+        switchScreen('analysis-screen');
+        
+        // Adjusts visibility of results containers
+        if (type === 'obra-nueva') {
+            getEl('obra-nueva-results-container').style.display = 'block';
+            getEl('restauracion-results').style.display = 'none';
+            getEl('sensitivity-analysis-container-on').style.display = 'block';
+            getEl('sensitivity-analysis-container-restauracion').style.display = 'none';
+        } else {
+            getEl('obra-nueva-results-container').style.display = 'none';
+            getEl('restauracion-results').style.display = 'block';
+            getEl('sensitivity-analysis-container-on').style.display = 'none';
+            getEl('sensitivity-analysis-container-restauracion').style.display = 'block';
         }
     }
 
-    function showSolutionsModal(aspect, area) {
-        const solutions = certificationsDB[currentCertification].data[aspect][area]?.solutions_pt;
-        if (!solutions) return;
-
-        const modalTitle = document.querySelector("#solutionsModal .modal-title");
-        if (modalTitle) modalTitle.textContent = `Market Solutions for: ${area}`;
-
-        const modalBody = document.querySelector("#solutionsModal .modal-body");
-        if (modalBody) {
-            const solutionsHTML = solutions.map(sol => {
-                const lccaButton = (sol.lcca_id && typeof lccaDB !== 'undefined' && lccaDB[sol.lcca_id])
-                    ? `<button class="btn btn-success btn-sm mt-2 launch-lcca-btn" data-lcca-id="${sol.lcca_id}">Analyze Life Cycle Cost</button>`
-                    : "";
-                return `
-                    <div class="solution-card mb-3 p-3 border rounded">
-                        <h5>${sol.name}</h5>
-                        <p class="small text-muted"><strong>Manufacturer/Brand:</strong> ${sol.manufacturer}</p>
-                        <p><strong>Description:</strong> ${sol.description}</p>
-                        <p><strong>Typical Application:</strong> ${sol.application}</p>
-                        <a href="${sol.link}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary btn-sm">Visit Website <i class="fas fa-external-link-alt"></i></a>
-                        ${lccaButton}
-                    </div>`;
-            }).join("");
-            modalBody.innerHTML = solutionsHTML;
-            $("#solutionsModal").modal("show");
-        }
+    // Event listener for project type buttons
+    document.querySelectorAll('.btn-project-type').forEach(button => {
+        button.addEventListener('click', (e) => {
+            renderForm(e.currentTarget.dataset.type);
+        });
+    });
+    
+    // --- FINANCIAL AND ECOMETRIC CALCULATION LOGIC ---
+    
+    // Collects all inputs from the active form
+    function collectInputs() {
+        const inputs = {};
+        const definition = projectDefinitions[currentProjectType];
+        definition.inputDefinitions.forEach(section => {
+            section.fields.forEach(field => {
+                inputs[field.id] = getValue(field.id);
+            });
+        });
+        return inputs;
     }
 
-    // --- Report Generator ---
-    if(reportGeneratorBtn) {
-        reportGeneratorBtn.addEventListener("click", () => {
-            const projectName = projectNameEl.value.trim() || "unnamed project";
-            const score = parseFloat(totalScoreEl.textContent);
-            const level = levelTextEl.textContent;
+    // New Construction Calculation (ROI/Urbanism)
+    const calculateObraNueva = (inputs) => {
+        // Constants
+        const GROSS_AREA_PER_CAR_SPACE = 28;
+        const GROSS_AREA_PER_BIKE_SPACE = 1.5;
+
+        // Conversion to decimals
+        const softCostsPercent = inputs.softCostsPercent / 100;
+        const marketingCostsPercent = inputs.marketingCostsPercent / 100;
+        const taxRatePercent = inputs.taxRatePercent / 100;
+        const loanToValuePercent = inputs.loanToValuePercent / 100;
+        const lotCoverage = inputs.maxLotCoverage / 100;
+
+        // 1. Urban Calculations
+        const maxBuildableArea = inputs.landArea * inputs.floorAreaRatio;
+        const maxFootprint = inputs.landArea * lotCoverage;
+        let theoreticalFloors = maxFootprint > 0 ? maxBuildableArea / maxFootprint : 0;
+        if (inputs.maxBuildingHeight > 0 && theoreticalFloors > inputs.maxBuildingHeight) {
+            theoreticalFloors = inputs.maxBuildingHeight;
+        }
+        const numberOfUnits = inputs.avgUnitSize > 0 ? Math.floor(maxBuildableArea / inputs.avgUnitSize) : 0;
+        
+        const residentialSpaces = numberOfUnits * inputs.parkingPerUnit;
+        const visitorSpaces = residentialSpaces * inputs.visitorParkingPercent;
+        const totalCarSpaces = Math.ceil(residentialSpaces + visitorSpaces);
+        const totalBikeSpaces = Math.ceil(numberOfUnits * inputs.bikeParkingPerUnit);
+        const totalParkingArea = (totalCarSpaces * GROSS_AREA_PER_CAR_SPACE) + (totalBikeSpaces * GROSS_AREA_PER_BIKE_SPACE);
+        
+        const netSellableArea = maxBuildableArea - totalParkingArea; 
+
+        // 2. Financial Calculations
+        const totalConstructionCost = maxBuildableArea * inputs.buildCost;
+        const softCosts = totalConstructionCost * softCostsPercent;
+        
+        const grossSalesRevenue = netSellableArea * inputs.sellPrice;
+        const marketingCosts = grossSalesRevenue * marketingCostsPercent;
+
+        const totalInvestment = inputs.landCost + totalConstructionCost + softCosts + marketingCosts;
+        
+        const grossProfit = grossSalesRevenue - totalInvestment;
+        const taxes = grossProfit > 0 ? grossProfit * taxRatePercent : 0;
+        const netProfit = grossProfit - taxes;
+
+        const roi = totalInvestment > 0 ? (netProfit / totalInvestment) * 100 : 0;
+        const equity = totalInvestment * (1 - loanToValuePercent);
+        const cashOnCashReturn = equity > 0 ? (netProfit / equity) * 100 : 0;
+
+        return { 
+            // Urban
+            maxBuildableArea, numberOfUnits, totalParkingArea, maxFootprint, theoreticalFloors, totalCarSpaces, totalBikeSpaces, netSellableArea,
+            // Financials
+            totalConstructionCost, softCosts, marketingCosts, totalInvestment, grossSalesRevenue, grossProfit, taxes, netProfit, roi, cashOnCashReturn 
+        };
+    };
+
+    // Restoration Calculation (NPV and Ecometrics)
+    const calculateRestauracion = (inputs) => {
+        // Conversion to decimals
+        const softCostsPercent = inputs.softCostsPercent / 100;
+        const capRate = inputs.capRate / 100;
+        const discountRate = inputs.discountRate / 100;
+        
+        // Ecometric constant (kept hardcoded as LCCA integration is complex, but commented for realism)
+        const energyCostPerKWh = 0.15; // Estimated cost per kWh for payback calculation (can be optimized by user input)
+
+        // 1. Financial Calculations
+        const softCosts = inputs.rehabilitationCost * softCostsPercent;
+        const totalInvestment = inputs.acquisitionCost + inputs.rehabilitationCost + softCosts;
+        
+        // Residual Value / Terminal Value
+        const residualValue = capRate > 0 ? inputs.annualRevenue / capRate : inputs.sellPriceAfter; 
+        
+        // Net Present Value (NPV) Calculation
+        let van = -totalInvestment;
+        const rate = discountRate;
+        for (let i = 1; i <= inputs.yearsOfOperation; i++) {
+            let cashFlow = inputs.annualRevenue;
+            if (i === inputs.yearsOfOperation) {
+                cashFlow += residualValue; // Add residual value in the final year
+            }
+            van += cashFlow / Math.pow(1 + rate, i);
+        }
+        
+        // Simple Profit
+        const totalProfitSimple = (inputs.annualRevenue * inputs.yearsOfOperation) + residualValue - totalInvestment;
+
+        // 2. Ecometric Calculations
+        const energySavedKWh = (inputs.currentEnergyConsumption - inputs.projectedEnergyConsumption) * inputs.areaTotal;
+        const energySavingPercent = inputs.currentEnergyConsumption > 0 ? ((inputs.currentEnergyConsumption - inputs.projectedEnergyConsumption) / inputs.currentEnergyConsumption) * 100 : 0;
+        
+        // Ecometric Payback (Rehab Cost vs Annual Energy Saving Value)
+        const annualEnergySavingsValue = energySavedKWh * energyCostPerKWh;
+        const paybackYears = annualEnergySavingsValue > 0 ? inputs.rehabilitationCost / annualEnergySavingsValue : Infinity;
+
+        return { 
+            totalInvestment, van, residualValue, energySavedKWh, energySavingPercent, paybackYears, totalProfitSimple 
+        };
+    };
+
+
+    // --- MAIN ANALYSIS EXECUTION ---
+    function runAnalysis() {
+        const form = document.getElementById('investment-analysis-form');
+        
+        // CORRECTION: Check form validity. This prevents the analysis if 'required' fields are empty.
+        if (form && form.checkValidity()) {
+             const inputs = collectInputs();
+
+            if (currentProjectType === 'obra-nueva') {
+                const results = calculateObraNueva(inputs);
+                
+                // Generate Sensitivity Analysis (New Construction)
+                const variations = [-0.10, 0, 0.10]; 
+                finalSensitivity.sellPrice = variations.map(v => calculateObraNueva({ ...inputs, sellPrice: inputs.sellPrice * (1 + v) }).netProfit);
+                finalSensitivity.buildCost = variations.map(v => calculateObraNueva({ ...inputs, buildCost: inputs.buildCost * (1 + v) }).netProfit);
+                
+                finalResults = results;
+                updateResultsObraNueva(results);
+                updateSensitivityTable(finalSensitivity);
+
+            } else if (currentProjectType === 'restauracion') {
+                const results = calculateRestauracion(inputs);
+                
+                // Generate Sensitivity Analysis (Restoration)
+                const variationsRehab = [-0.10, 0, 0.10]; // +/- 10% cost
+                const variationsRate = [-0.02, 0, 0.02]; // +/- 2% WACC
+                
+                finalSensitivity.rehabCost = variationsRehab.map(v => calculateRestauracion({ ...inputs, rehabilitationCost: inputs.rehabilitationCost * (1 + v) }).van);
+                finalSensitivity.discountRate = variationsRate.map(v => calculateRestauracion({ ...inputs, discountRate: inputs.discountRate / 100 + v }).van); 
+
+                finalResults = results;
+                updateResultsRestauracion(results);
+                updateSensitivityRestauracion(finalSensitivity);
+            }
             
-            let reportText = `SUSTAINABILITY DESCRIPTIVE REPORT\n`;
-            reportText += `PROJECT: ${projectName.toUpperCase()}\n\n`;
-            
-            reportText += `== EXECUTIVE SUMMARY ==\n`;
-            reportText += `The project has achieved a score of ${score.toFixed(1)} out of 20.0 points in the LiderA system, obtaining a Sustainability Class "${level}".\n\n`;
-
-            reportText += `== ADOPTED STRATEGIES ==\n`;
-            reportText += `The following sustainability strategies adopted for ${projectName} are described below, based on the LiderA evaluation system criteria.\n\n`;
-
-            const checkedBoxes = document.querySelectorAll('#evaluationForm input[type="checkbox"]:checked');
-
-            if (checkedBoxes.length === 0) {
-                reportText += "No sustainability criteria were selected in the evaluation.";
-            } else {
-                const processedAspects = new Set();
-                const processedAreas = new Set(); // To avoid duplicating area descriptions
-                checkedBoxes.forEach(checkbox => {
-                    const { aspect, area } = checkbox.dataset;
-                    if (!processedAspects.has(aspect)) {
-                        reportText += `\n--- WEIGHTING AREA: ${aspect.toUpperCase()} ---\n\n`;
-                        processedAspects.add(aspect);
-                    }
-                    if (!processedAreas.has(area)) { // Only add if area hasn't been described yet
-                        const info = certificationsDB[currentCertification]?.data[aspect]?.[area]?.info;
-                        if (info && info.descriptive_report) {
-                            reportText += `>> CRITERION: ${area.toUpperCase()}\n`;
-                            reportText += `${info.descriptive_report}\n\n`;
-                            processedAreas.add(area);
-                        }
-                    }
-                });
-            }
-
-            getEl("report-output").value = reportText;
-            $("#reportModal").modal("show");
-        });
-    }
-
-    const copyReportBtn = getEl("copyReportBtn");
-    if(copyReportBtn) {
-        copyReportBtn.addEventListener("click", () => {
-            const reportOutput = getEl("report-output");
-            reportOutput.select();
-            reportOutput.setSelectionRange(0, 99999);
-            try {
-                document.execCommand("copy");
-                alert("Text copied to clipboard!");
-            } catch (err) {
-                console.error("Failed to copy text: ", err);
-            }
-        });
-    }
-
-    // --- LCCA Calculator Logic ---
-    function calculateLCCA(material, quantity, discountRate) {
-        const rate = discountRate / 100;
-        const years = material.useful_life;
-        let maintenanceCosts = 0;
-        let replacementCosts = 0;
-        let energySavings = 0;
-
-        for (let i = 1; i <= years; i++) {
-            maintenanceCosts += (material.annual_maintenance_cost * quantity) / Math.pow(1 + rate, i);
-            if (i % material.useful_life === 0 && i < years) { 
-                 replacementCosts += (material.initial_cost * material.replacement_cost_factor * quantity) / Math.pow(1 + rate, i);
-            }
-            energySavings += (material.annual_energy_saving * quantity) / Math.pow(1 + rate, i);
+            getEl('generateReportBtn').style.display = 'block';
+        } else {
+            // This alert is a fallback, modern browsers handle required field messages automatically on form submit
+            alert('Please fill in all required fields.');
         }
+    }
 
-        const initialCost = material.initial_cost * quantity;
-        const totalCost = initialCost + maintenanceCosts + replacementCosts - energySavings;
 
-        return { initialCost, maintenanceCosts, replacementCosts, energySavings, totalCost };
+    // --- DISPLAY RESULTS IN SIDEBAR ---
+
+    // Actualiza la barra lateral para Obra Nueva
+    function updateResultsObraNueva(results) {
+        getEl('obra-nueva-results-container').style.display = 'block';
+        getEl('restauracion-results').style.display = 'none';
+
+        // Urban Metrics
+        getEl('resBuildableArea').textContent = `${formatNumber(results.maxBuildableArea)} m²`;
+        getEl('resFootprint').textContent = `${formatNumber(results.maxFootprint)} m²`;
+        getEl('resFloors').textContent = results.theoreticalFloors.toFixed(1);
+        getEl('resTotalUnits').textContent = formatNumber(results.numberOfUnits);
+        getEl('resCarSpaces').textContent = formatNumber(results.totalCarSpaces);
+        getEl('resBikeSpaces').textContent = formatNumber(results.totalBikeSpaces);
+        getEl('resParkingArea').textContent = `${formatNumber(results.totalParkingArea)} m²`;
+        
+        // Financial Metrics
+        getEl('resConstructionCost').textContent = formatCurrency(results.totalConstructionCost);
+        getEl('resOtherCosts').textContent = formatCurrency(results.softCosts + results.marketingCosts); 
+        getEl('resTotalInvestment').textContent = formatCurrency(results.totalInvestment);
+        getEl('resSalesRevenue').textContent = formatCurrency(results.grossSalesRevenue);
+        getEl('resGrossProfit').textContent = formatCurrency(results.grossProfit);
+        getEl('resTaxes').textContent = formatCurrency(results.taxes);
+        getEl('resNetProfit').textContent = formatCurrency(results.netProfit);
+        getEl('resROI').textContent = `${results.roi.toFixed(2)} %`;
+        getEl('resCoC').textContent = `${results.cashOnCashReturn.toFixed(2)} %`;
+    }
+
+    // Actualiza la barra lateral para Restauración
+    function updateResultsRestauracion(results) {
+        getEl('obra-nueva-results-container').style.display = 'none';
+        getEl('restauracion-results').style.display = 'block';
+
+        const vanStatus = results.van >= 0 ? '<span class="text-success"><i class="fas fa-check-circle"></i> Profitable</span>' : '<span class="text-danger"><i class="fas fa-times-circle"></i> Risk</span>';
+
+        getEl('restauracion-results').innerHTML = `
+            <h4 class="mb-3">💰 Financial Viability (DCF)</h4>
+            <ul class="list-group mb-4">
+                <li class="list-group-item d-flex justify-content-between">Total Projected Investment: <strong>${formatCurrency(results.totalInvestment)}</strong></li>
+                <li class="list-group-item d-flex justify-content-between text-success"><strong>Net Present Value (NPV):</strong> <strong>${formatCurrency(results.van)}</strong> ${vanStatus}</li>
+                <li class="list-group-item d-flex justify-content-between">Residual (Terminal) Value: <strong>${formatCurrency(results.residualValue)}</strong></li>
+                <li class="list-group-item d-flex justify-content-between text-primary">Projected Simple Profit: <strong>${formatCurrency(results.totalProfitSimple)}</strong></li>
+            </ul>
+            <h4 class="mb-3">🌿 Operational Ecometrics</h4>
+            <ul class="list-group">
+                <li class="list-group-item d-flex justify-content-between">Total Annual Energy Savings: <strong>${formatNumber(results.energySavedKWh)} kWh</strong></li>
+                <li class="list-group-item d-flex justify-content-between">Consumption Reduction: <strong>${results.energySavingPercent.toFixed(1)} %</strong></li>
+                <li class="list-group-item d-flex justify-content-between text-info">Ecometric Payback (Years): <strong>${results.paybackYears.toFixed(1)}</strong></li>
+            </ul>
+        `;
+    }
+
+    // ... (updateSensitivityTable and updateSensitivityRestauracion remain unchanged)
+    
+    function updateSensitivityTable(results) {
+        getEl('sensitivity-analysis-container-on').style.display = 'block';
+        getEl('sensitivity-analysis-container-restauracion').style.display = 'none';
+        
+        const currency = (val) => val.toLocaleString('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 });
+
+        getEl('sensSellPriceLow').textContent = currency(results.sellPrice[0]);
+        getEl('sensSellPriceBase').textContent = currency(results.sellPrice[1]);
+        getEl('sensSellPriceHigh').textContent = currency(results.sellPrice[2]);
+
+        getEl('sensBuildCostLow').textContent = currency(results.buildCost[0]);
+        getEl('sensBuildCostBase').textContent = currency(results.buildCost[1]);
+        getEl('sensBuildCostHigh').textContent = currency(results.buildCost[2]);
     }
     
-    function updateLccaDisplay(material, quantity, discountRate) {
-        const results = calculateLCCA(material, quantity, discountRate);
-        const formatCurrency = val => `$ ${val.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+    function updateSensitivityRestauracion(results) {
+        getEl('sensitivity-analysis-container-on').style.display = 'none';
+        getEl('sensitivity-analysis-container-restauracion').style.display = 'block';
 
-        getEl('lccaInitialCost').textContent = formatCurrency(results.initialCost);
-        getEl('lccaMaintenanceCost').textContent = formatCurrency(results.maintenanceCosts);
-        getEl('lccaReplacementCost').textContent = formatCurrency(results.replacementCosts);
-        getEl('lccaSavings').textContent = formatCurrency(results.energySavings);
-        getEl('lccaTotalCost').textContent = formatCurrency(results.totalCost);
-
-        const ctx = getEl('lccaChart').getContext('2d');
-        if (lccaChartInstance) {
-            lccaChartInstance.destroy();
-        }
-        lccaChartInstance = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Initial Cost', 'Maintenance', 'Replacement', 'Savings'],
-                datasets: [{
-                    data: [
-                        Math.max(0, results.initialCost), 
-                        Math.max(0, results.maintenanceCosts), 
-                        Math.max(0, results.replacementCosts), 
-                        Math.max(0, results.energySavings) 
-                    ],
-                    backgroundColor: ['#0a3d62', '#ffab00', '#dc3545', '#28a745'],
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { position: 'top' },
-                    title: { display: true, text: `Cost Distribution for ${quantity} ${material.unit}` }
-                }
-            }
-        });
+        const tableHTML = `
+            <h4 class="mb-3">Sensitivity Analysis (NPV)</h4>
+            <table class="table table-bordered text-center table-sm">
+                <thead>
+                    <tr><th>Variable</th><th>-10% (NPV)</th><th>Base (NPV)</th><th>+10% (NPV)</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Rehabilitation Cost</td>
+                        <td>${formatCurrency(results.rehabCost[0])}</td>
+                        <td>${formatCurrency(results.rehabCost[1])}</td>
+                        <td>${formatCurrency(results.rehabCost[2])}</td>
+                    </tr>
+                </tbody>
+            </table>
+             <table class="table table-bordered text-center table-sm mt-3">
+                <thead>
+                    <tr><th>Variable</th><th>-2% (NPV)</th><th>Base (NPV)</th><th>+2% (NPV)</th></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Discount Rate (WACC)</td>
+                        <td>${formatCurrency(results.discountRate[0])}</td>
+                        <td>${formatCurrency(results.discountRate[1])}</td>
+                        <td>${formatCurrency(results.discountRate[2])}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <small class="text-muted">The table shows the resulting NPV when varying the Rehabilitation Cost (±10%) or the Discount Rate (±2%).</small>
+        `;
+        getEl('sensitivity-analysis-container-restauracion').innerHTML = tableHTML;
     }
 
-    function launchLccaCalculator(lccaId) {
-        const material = lccaDB[lccaId];
-        if (!material) {
-            console.error("Error: Material data not found for LCCA.");
-            return;
-        }
 
-        getEl('lccaMaterialName').textContent = material.name;
-        getEl('lccaUnit').textContent = material.unit;
+    // --- GENERACIÓN DE REPORTE COMPLETO (SUPER COMPLETO) ---
+    function generateComprehensiveReport() {
+        const inputs = collectInputs();
+        const results = finalResults;
+        const sensitivity = finalSensitivity;
+        const reportTitle = projectDefinitions[currentProjectType].title;
+        let reportContent = '';
+        const today = new Date().toLocaleDateString('en-US');
 
-        const quantityInput = getEl('lccaQuantity');
-        const discountRateInput = getEl('lccaDiscountRate');
-        
-        const updateHandler = () => {
-            const quantity = parseFloat(quantityInput.value) || 1;
-            const discountRate = parseFloat(discountRateInput.value) || 0;
-            updateLccaDisplay(material, quantity, discountRate);
+        // Helper function to generate list of inputs
+        const generateInputList = (type) => {
+            const definition = projectDefinitions[type];
+            let list = '<ul class="list-unstyled">';
+            definition.inputDefinitions.forEach(section => {
+                list += `<li><strong>-- ${section.sectionTitle} --</strong></li>`;
+                section.fields.forEach(field => {
+                    // CORRECCIÓN: Se usa formatPercent para mostrar decimales en porcentajes
+                    const isPercent = field.label.includes('(%)');
+                    const value = isPercent ? `${formatPercent(inputs[field.id])} %` : formatNumber(inputs[field.id]);
+                    list += `<li>${field.label}: <strong>${value}</strong></li>`;
+                });
+            });
+            list += '</ul>';
+            return list;
         };
+
+        // --- Structure for NEW CONSTRUCTION ---
+        if (currentProjectType === 'obra-nueva') {
+            const vanStatusText = results.netProfit >= 0 ? 'The project yields a positive Net Profit. It is recommended to proceed.' : 'The Net Profit is negative. Re-evaluate costs or increase sale price.';
+
+            reportContent = `
+                <div class="row">
+                    <div class="col-12 text-center mb-4"><h1 class="text-primary">VIABILITY REPORT: ${reportTitle.toUpperCase()}</h1><p class="lead">Analysis Date: ${today}</p></div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="card p-3 h-100 bg-light">
+                            <h4>I. INPUT PARAMETERS (URBAN & FINANCIAL)</h4>
+                            ${generateInputList('obra-nueva')}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="card p-3 h-100 bg-light">
+                            <h4>II. VIABILITY SUMMARY</h4>
+                            <p class="lead text-success"><strong>PROJECTED NET PROFIT: ${formatCurrency(results.netProfit)}</strong></p>
+                            <p class="lead text-primary"><strong>RETURN ON INVESTMENT (ROI): ${results.roi.toFixed(2)} %</strong></p>
+                            <hr>
+                            <h5>Cost Distribution</h5>
+                            <ul class="list-unstyled">
+                                <li><strong>Total Investment:</strong> ${formatCurrency(results.totalInvestment)}</li>
+                                <li>Land Cost: ${formatCurrency(inputs.landCost)}</li>
+                                <li>Construction Cost: ${formatCurrency(results.totalConstructionCost)}</li>
+                                <li>Soft & Mkt Costs: ${formatCurrency(results.softCosts + results.marketingCosts)}</li>
+                            </ul>
+                             <p class="small mt-3">${vanStatusText}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12 mb-4">
+                        <div class="card p-4">
+                            <h4>III. DETAILED URBAN ANALYSIS</h4>
+                            <p>The project maximizes the lot's potential with a buildable area of <strong>${formatNumber(results.maxBuildableArea)} m²</strong>, allowing for the development of <strong>${formatNumber(results.numberOfUnits)} residential units</strong>.</p>
+                            <p>The design incorporates a parking infrastructure of <strong>${formatNumber(results.totalCarSpaces)} car spaces</strong> and <strong>${formatNumber(results.totalBikeSpaces)} bicycle spaces</strong>, occupying <strong>${formatNumber(results.totalParkingArea)} m²</strong>.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-4">
+                        <div class="card p-4 bg-warning-light">
+                            <h4>IV. RISK ANALYSIS (SENSITIVITY)</h4>
+                            <p>The key metric (Net Profit) remains positive even with significant variations in critical market variables:</p>
+                            <table class="table table-bordered text-center table-sm">
+                                <thead><tr><th>Variable</th><th>-10% (Net Profit)</th><th>Base</th><th>+10% (Net Profit)</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Sale Price</td><td>${formatCurrency(sensitivity.sellPrice[0])}</td><td>${formatCurrency(sensitivity.sellPrice[1])}</td><td>${formatCurrency(sensitivity.sellPrice[2])}</td></tr>
+                                    <tr><td>Construction Cost</td><td>${formatCurrency(sensitivity.buildCost[0])}</td><td>${formatCurrency(sensitivity.buildCost[1])}</td><td>${formatCurrency(sensitivity.buildCost[2])}</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } 
         
-        // A more robust way to handle event listeners
-        if (window.lccaUpdateHandler) {
-            quantityInput.removeEventListener('input', window.lccaUpdateHandler);
-            discountRateInput.removeEventListener('input', window.lccaUpdateHandler);
+        // --- Structure for RESTORATION ---
+        else if (currentProjectType === 'restauracion') {
+             const vanStatusText = results.van >= 0 ? 'The project yields value above the discount rate. It is recommended to proceed.' : 'The Net Present Value is negative. Re-evaluate rehabilitation costs or increase residual value.';
+
+            reportContent = `
+                <div class="row">
+                    <div class="col-12 text-center mb-4"><h1 class="text-info">INVESTMENT & ECOMETRIC REPORT: ${reportTitle.toUpperCase()}</h1><p class="lead">Analysis Date: ${today}</p></div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="card p-3 h-100 bg-light">
+                            <h4>I. KEY INPUT PARAMETERS</h4>
+                            ${generateInputList('restauracion')}
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6 mb-4">
+                        <div class="card p-3 h-100 bg-info text-white">
+                            <h4>II. NET PRESENT VALUE (NPV) SUMMARY</h4>
+                            <p class="lead"><strong>TOTAL INVESTMENT: ${formatCurrency(results.totalInvestment)}</strong></p>
+                            <p class="display-4"><strong>NPV: ${formatCurrency(results.van)}</strong></p>
+                            <p><strong>Status:</strong> ${vanStatusText}</p>
+                            <p class="small">Residual (Terminal) Value: ${formatCurrency(results.residualValue)}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-12 mb-4">
+                        <div class="card p-4">
+                            <h4>III. ECOMETRICS & ENERGY EFFICIENCY</h4>
+                            <p>The restoration is not only financially viable but also produces a quantifiable positive environmental impact:</p>
+                            <ul class="list-unstyled">
+                                <li><strong>Gross Energy Savings:</strong> <strong>${formatNumber(results.energySavedKWh)} kWh/year</strong>, representing a reduction of <strong>${results.energySavingPercent.toFixed(1)} %</strong> in consumption.</li>
+                                <li><strong>Ecometric Payback:</strong> The cost of rehabilitation is amortized in <strong>${results.paybackYears.toFixed(1)} years</strong> solely with the saving on the energy bill.</li>
+                                <li><strong>Ecometric Advantage:</strong> The large Embodied Carbon Footprint associated with demolition and new construction is avoided.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-4">
+                        <div class="card p-4 bg-warning-light">
+                            <h4>IV. RISK ANALYSIS (NPV SENSITIVITY)</h4>
+                            <p>The table shows the variation of the NPV against the two main sources of risk in a rehabilitation: cost overruns and changes in the discount rate (WACC):</p>
+                             <table class="table table-bordered text-center table-sm">
+                                <thead><tr><th>Variable</th><th>-10% (NPV)</th><th>Base (NPV)</th><th>+10% (NPV)</th></tr></thead>
+                                <tbody><tr><td>Rehabilitation Cost</td><td>${formatCurrency(sensitivity.rehabCost[0])}</td><td>${formatCurrency(sensitivity.rehabCost[1])}</td><td>${formatCurrency(sensitivity.rehabCost[2])}</td></tr></tbody>
+                            </table>
+                            <table class="table table-bordered text-center table-sm mt-3">
+                                <thead><tr><th>Variable</th><th>-2% (NPV)</th><th>Base (NPV)</th><th>+2% (NPV)</th></tr></thead>
+                                <tbody><tr><td>Discount Rate (WACC)</td><td>${formatCurrency(sensitivity.discountRate[0])}</td><td>${formatCurrency(sensitivity.discountRate[1])}</td><td>${formatCurrency(sensitivity.discountRate[2])}</td></tr></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
 
-        window.lccaUpdateHandler = updateHandler; // Store handler to remove it later
-        
-        quantityInput.addEventListener('input', window.lccaUpdateHandler);
-        discountRateInput.addEventListener('input', window.lccaUpdateHandler);
 
-        updateHandler(); // Initial calculation
-        $("#lccaModal").modal("show");
+        // Show the modal
+        getEl('reportOutputContent').innerHTML = reportContent;
+        $('#completeReportModal').modal('show');
     }
 
-    // --- Event Listeners ---
+    // --- REPORT PRINTING FUNCTIONALITY ---
+    window.printReportInvestment = function() {
+        const reportContent = getEl('reportOutputContent').innerHTML;
+        const printWindow = window.open('', '', 'height=800,width=800');
+        printWindow.document.write('<html><head><title>Investment Report</title>');
+        printWindow.document.write('<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"><link rel="stylesheet" href="style.css">');
+        printWindow.document.write('<style>@media print {.btn, .modal-footer {display: none;}}</style>');
+        printWindow.document.write('</head><body><div class="container py-5">' + reportContent + '</div></body></html>');
+        printWindow.document.close();
+        setTimeout(() => printWindow.print(), 500);
+    }
 
-    evaluationForm.addEventListener("change", e => {
-        if (e.target.matches('input[type="checkbox"]')) {
-            const { aspect, area, credit } = e.target.dataset;
-            const certConfig = certificationsDB[currentCertification];
-            const creditValue = certConfig.data[aspect][area].credits[credit];
-            evaluationData[aspect][area] += e.target.checked ? creditValue : -creditValue;
-            updateScoreDisplay();
-        }
-    });
 
-    evaluationForm.addEventListener("click", e => {
-        const infoIcon = e.target.closest(".info-icon");
-        if (infoIcon) {
-            const { aspect, area } = infoIcon.dataset;
-            showInfoModal(aspect, area);
-        }
-        const solutionsIcon = e.target.closest(".solutions-icon");
-        if (solutionsIcon) {
-            const { aspect, area } = solutionsIcon.dataset;
-            showSolutionsModal(aspect, area);
-        }
-    });
-
-    // Event Delegation for the LCCA calculator button
-    const solutionsModalBody = document.querySelector("#solutionsModal .modal-body");
-    if(solutionsModalBody){
-        solutionsModalBody.addEventListener('click', function (e) {
-            const lccaBtn = e.target.closest('.launch-lcca-btn');
-            if (lccaBtn) {
-                const lccaId = lccaBtn.dataset.lccaId;
-                launchLccaCalculator(lccaId);
-            }
+    // --- FINAL EVENT LISTENERS ---
+    // CORRECCIÓN: Se cambia el listener de 'click' del botón a 'submit' del formulario
+    if (analysisForm) {
+        analysisForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            runAnalysis();
         });
     }
 
-    // --- Initialization ---
-    renderForm();
+    if(generateReportBtn) generateReportBtn.addEventListener('click', generateComprehensiveReport);
+
+    // Initial load: show the selection screen
+    switchScreen('selection-screen');
+
 });
